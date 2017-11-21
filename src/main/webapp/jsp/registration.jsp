@@ -92,11 +92,12 @@
 								<a class="dropdown-item" href="#"><c:out value="${log_in_link_forgot_password}"/></a>
 							</div>
 					</li>
-					<form class="nav-item" method="get" action="FrontController">
+					<form class="nav-item" method="post" action="FrontController">
 						<input  type="hidden" name="command" value="CHANGE_LANGUAGE">
 						<div class="btn-group-vertical">
 							<button class="btn btn-dark btn-sm py-0 languages" name="local" type="submit" value="en_US">EN</button>
 							<button class="btn btn-dark btn-sm py-0 languages" name="local" type="submit" value="ru">RU</button>
+							<input type="hidden" name="url" value="${pageContext.request.requestURI}">
 						</div>
 					</form>
 				</ul>
@@ -123,7 +124,7 @@
 					<input type="password" class="form-control" id="passwordInput" placeholder="<c:out value="${locale_reg_form_input_password}"/>">
 				</div>
 				<button type="submit" class="btn btn-primary"><c:out value="${locale_reg_form_button_submit}"/></button>
-				<input  type="hidden" name="command" value="registration">
+				<input  type="hidden" name="command" value="REGISTRATION">
 			</form>
 		</div>
 		<div class="col-2">Sidebar</div>

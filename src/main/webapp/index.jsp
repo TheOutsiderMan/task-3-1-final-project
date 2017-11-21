@@ -84,11 +84,12 @@
 								<a class="dropdown-item" href="#"><c:out value="${log_in_link_forgot_password}"/></a>
 							</div>
 					</li>
-					<form class="nav-item" method="get" action="FrontController">
+					<form class="nav-item" method="post" action="FrontController">
 						<input  type="hidden" name="command" value="CHANGE_LANGUAGE">
 						<div class="btn-group-vertical">
 							<button class="btn btn-dark btn-sm py-0 languages" name="local" type="submit" value="en_US">EN</button>
 							<button class="btn btn-dark btn-sm py-0 languages" name="local" type="submit" value="ru">RU</button>
+							<input type="hidden" name="url" value="${pageContext.request.requestURI}">
 						</div>
 					</form>
 				</ul>

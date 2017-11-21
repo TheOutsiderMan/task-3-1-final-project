@@ -15,9 +15,11 @@ public class LanguageToggler implements Command {
 		request.setCharacterEncoding("utf-8");
 		
 		String lang = request.getParameter("local");
+		String url = request.getParameter("url");
+		String forwardUrl = url.replaceFirst(".+/", "");
 		
 		request.getSession(true).setAttribute("locale", lang);
-		request.getRequestDispatcher("index.jsp").forward(request, response);
+		request.getRequestDispatcher(forwardUrl).forward(request, response);
 	}
 
 }
