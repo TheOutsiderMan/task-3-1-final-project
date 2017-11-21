@@ -53,7 +53,7 @@
 				<form class="form-inline my-2 my-lg-0" method="get" action="FrontController">
 					<input class="form-control mr-sm-2" type="search" aria-label="Search" name="searchText">
 					<button class="btn btn-dark my-2 my-sm-0" type="submit"><c:out value="${navbar_link_search}"/></button>
-					<input type="hidden" name="command" value="search">
+					<input type="hidden" name="command" value="SEARCH">
 				</form>
 				<ul class="navbar-nav mx-right">
 					<li class="nav-item dropdown">
@@ -76,7 +76,7 @@
 										<c:out value="${log_in_link_remember}"/>
 									</label>
 								</div>
-								<input type="hidden" name="command" value="authentication">
+								<input type="hidden" name="command" value="AUTHENTICATION">
 								<button type="submit" class="btn btn-primary"><c:out value="${log_in_button_log_in}"/></button>
 							</form>
 							<div class="dropdown-divider"></div>
@@ -85,9 +85,9 @@
 							</div>
 					</li>
 					<form class="nav-item" method="get" action="FrontController">
-						<input  type="hidden" name="command" value="CHANGELANGUAGE">
+						<input  type="hidden" name="command" value="CHANGE_LANGUAGE">
 						<div class="btn-group-vertical">
-							<button class="btn btn-dark btn-sm py-0 languages" name="local" type="submit" value="en">EN</button>
+							<button class="btn btn-dark btn-sm py-0 languages" name="local" type="submit" value="en_US">EN</button>
 							<button class="btn btn-dark btn-sm py-0 languages" name="local" type="submit" value="ru">RU</button>
 						</div>
 					</form>

@@ -16,12 +16,11 @@ public class CommandProvider {
 		commands.put(CommandName.SEARCH, new SearchImpl());
 		commands.put(CommandName.AUTHENTICATION, new AuthenticationImpl());
 		commands.put(CommandName.REGISTRATION, new RegistrationImpl());
-		commands.put(CommandName.CHANGELANGUAGE, new LanguageToggler());
+		commands.put(CommandName.CHANGE_LANGUAGE, new LanguageToggler());
 	}
 	
 	public Command takeCommand(String name) {
-		String upper = name.toUpperCase();
-		CommandName commandName = CommandName.valueOf(upper);
+		CommandName commandName = CommandName.valueOf(name.toUpperCase());
 		return commands.get(commandName);
 	}
 	
