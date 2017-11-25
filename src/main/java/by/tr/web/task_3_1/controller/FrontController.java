@@ -11,6 +11,9 @@ import by.tr.web.task_3_1.controller.command.Command;
 import by.tr.web.task_3_1.controller.command.CommandProvider;
 
 public class FrontController extends HttpServlet {
+	private static final String PARAM_COMMAND = "command";
+	private static final String UTF_8 = "utf-8";
+
 	private static final long serialVersionUID = 1L;
       
 	private CommandProvider provider = new CommandProvider();
@@ -20,17 +23,17 @@ public class FrontController extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("utf-8");
+		request.setCharacterEncoding(UTF_8);
 		
-		String commandName = request.getParameter("command");
+		String commandName = request.getParameter(PARAM_COMMAND);
 		Command command = provider.takeCommand(commandName);
 		command.execute(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("utf-8");
+		request.setCharacterEncoding(UTF_8);
 		
-		String commandName = request.getParameter("command");
+		String commandName = request.getParameter(PARAM_COMMAND);
 		Command command = provider.takeCommand(commandName);
 		command.execute(request, response);
 	}

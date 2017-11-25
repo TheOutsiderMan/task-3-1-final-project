@@ -106,8 +106,8 @@
 	</header>
 	<main class="container-fluid">
 	<div class="row">
-		<div class="col-2">Sidebar</div>
-		<div class="col-8">
+		<div class="col-3">Sidebar</div>
+		<div class="col-6">
 			<form method="post" action="FrontController">
 				<div class="form-group">
 					<div class="form-group">
@@ -127,7 +127,7 @@
 				<input  type="hidden" name="command" value="REGISTRATION">
 			</form>
 		</div>
-		<div class="col-2">Sidebar</div>
+		<div class="col-3">Sidebar</div>
 	</div>
 	</main>
 	<footer class="footer">
