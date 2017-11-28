@@ -1,26 +1,25 @@
 package by.tr.web.task_3_1.controller.command;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import by.tr.web.task_3_1.controller.command.impl.AuthenticationImpl;
-import by.tr.web.task_3_1.controller.command.impl.LanguageToggler;
-import by.tr.web.task_3_1.controller.command.impl.RegistrationImpl;
-import by.tr.web.task_3_1.controller.command.impl.SearchImpl;
+import org.xml.sax.SAXException;
+
+import by.tr.web.task_3_1.controller.command.util.CommandInitializer;
 
 public class CommandProvider {
 	
-	private Map<CommandName, Command> commands = new HashMap<>();
-
-	public CommandProvider() {
-		commands.put(CommandName.SEARCH, new SearchImpl());
-		commands.put(CommandName.AUTHENTICATION, new AuthenticationImpl());
-		commands.put(CommandName.REGISTRATION, new RegistrationImpl());
-		commands.put(CommandName.CHANGE_LANGUAGE, new LanguageToggler());
-	}
+	private Map<String, Command> commands = new HashMap<>();
+	private CommandInitializer initializer =  new CommandInitializer();
 	
-	public Command takeCommand(String name) {
-		CommandName commandName = CommandName.valueOf(name.toUpperCase());
+	public CommandProvider() {}
+	
+	public Command takeCommand(String name) throws ClassNotFoundException, InstantiationException, IllegalAccessException, SAXException, IOException {
+		if (commands.isEmpty()) {
+			commands = initializer.initializeCommands();
+		}
+		String commandName = name.toUpperCase();
 		return commands.get(commandName);
 	}
 	

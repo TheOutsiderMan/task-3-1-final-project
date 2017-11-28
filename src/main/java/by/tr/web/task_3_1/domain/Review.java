@@ -1,6 +1,10 @@
 package by.tr.web.task_3_1.domain;
 
-public class Review {
+import java.io.Serializable;
+
+public class Review implements Serializable {
+	private static final long serialVersionUID = -8502364969152284502L;
+	
 	private String textReview;
 	private User author;
 	private Movie reviewedMovie;

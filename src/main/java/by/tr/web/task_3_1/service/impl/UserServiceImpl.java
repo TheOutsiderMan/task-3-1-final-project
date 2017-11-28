@@ -9,13 +9,13 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public boolean authenticateUserByLogin(String login, String password) {
 
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean authenticateUserByEmail(String email, String password) {
 
-		return false;
+		return true;
 	}
 
 	@Override

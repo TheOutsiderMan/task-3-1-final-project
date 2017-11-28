@@ -1,6 +1,11 @@
 package by.tr.web.task_3_1.domain;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
+
+	private static final long serialVersionUID = -4779286554174922446L;
+	
 	private String login;
 	private String email;
 	private Role role;

@@ -63,8 +63,8 @@
 						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="logIn">
 							<form class="dropdown-item" method="post" action="FrontController">
 								<div class="form-group">
-									<label for="emailOrName"><c:out value="${log_in_form_label_email_name}"/></label>
-									<input type="text" class="form-control" name="emailOrName" placeholder="<c:out value="${log_in_form_input_email_name}"/>">
+									<label for="emailOrlogin"><c:out value="${log_in_form_label_email_name}"/></label>
+									<input type="text" class="form-control" name="emailOrlogin" placeholder="<c:out value="${log_in_form_input_email_name}"/>">
 								</div>
 								<div class="form-group">
 									<label for="password"><c:out value="${log_in_form_label_password}"/></label>
@@ -72,11 +72,12 @@
 								</div>
 								<div class="form-check">
 									<label class="form-check-label">
-										<input type="checkbox" class="form-check-input" name="remember">
+										<input type="checkbox" class="form-check-input" name="rememberUser">
 										<c:out value="${log_in_link_remember}"/>
 									</label>
 								</div>
 								<input type="hidden" name="command" value="AUTHENTICATION">
+								<input type="hidden" name="url" value="${pageContext.request.requestURI}">
 								<button type="submit" class="btn btn-primary"><c:out value="${log_in_button_log_in}"/></button>
 							</form>
 							<div class="dropdown-divider"></div>

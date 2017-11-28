@@ -1,6 +1,10 @@
 package by.tr.web.task_3_1.domain;
 
-public class Movie {
+import java.io.Serializable;
+
+public class Movie implements Serializable{
+	private static final long serialVersionUID = 7701935155292352268L;
+	
 	private String title;
 	private double mark;
 	private int year;
@@ -64,5 +68,5 @@ public class Movie {
 			return false;
 		return true;
 	}
-	
+
 }

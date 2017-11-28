@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commands xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.tr.web.final.task" xsi:schemaLocation="http://www.tr.web.final.task commands.xsd">
+	<command>
+		<name>SEARCH</name>
+		<class>by.tr.web.task_3_1.controller.command.impl.SearchImpl</class>
+	</command>
+	<command>
+		<name>AUTHENTICATION</name>
+		<class>by.tr.web.task_3_1.controller.command.impl.AuthenticationImpl</class>
+	</command>
+	<command>
+		<name>REGISTRATION</name>
+		<class>by.tr.web.task_3_1.controller.command.impl.RegistrationImpl</class>
+	</command>
+	<command>
+		<name>CHANGE_LANGUAGE</name>
+		<class>by.tr.web.task_3_1.controller.command.impl.LanguageTogglerImpl</class>
+	</command>
+</commands>
