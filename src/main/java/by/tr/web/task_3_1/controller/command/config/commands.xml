@@ -2,19 +2,24 @@
 <commands xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://www.tr.web.final.task" xsi:schemaLocation="http://www.tr.web.final.task commands.xsd">
 	<command>
-		<name>SEARCH</name>
+		<name>search</name>
 		<class>by.tr.web.task_3_1.controller.command.impl.SearchImpl</class>
 	</command>
 	<command>
-		<name>AUTHENTICATION</name>
+		<name>authentication</name>
 		<class>by.tr.web.task_3_1.controller.command.impl.AuthenticationImpl</class>
 	</command>
 	<command>
-		<name>REGISTRATION</name>
+		<name>registration</name>
 		<class>by.tr.web.task_3_1.controller.command.impl.RegistrationImpl</class>
 	</command>
 	<command>
-		<name>CHANGE_LANGUAGE</name>
+		<name>change_language</name>
 		<class>by.tr.web.task_3_1.controller.command.impl.LanguageTogglerImpl</class>
 	</command>
+	<command>
+		<name>log_off</name>
+		<class>by.tr.web.task_3_1.controller.command.impl.LogOffImpl</class>
+	</command>
+	
 </commands>

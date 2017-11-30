@@ -6,7 +6,7 @@
 <html>
 <head>
 
-<fmt:setLocale value="${sessionScope.locale}"/>
+<fmt:setLocale value="${cookie.locale.value}" />
 <fmt:setBundle basename="by.tr.web.task_3_1.localization.locale" var="locale"/>
 <fmt:message bundle="${locale}" key="locale.navbar.link.main.page" var="navbar_link_main_page"></fmt:message>
 <fmt:message bundle="${locale}" key="locale.navbar.link.movies" var="navbar_link_movies"></fmt:message>
@@ -43,7 +43,8 @@
 <body>
 	<header class="row-fluid">
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-			<a class="navbar-brand" href="index.jsp"><c:out value="${locale_page_title}"/></a>
+			<a class="navbar-brand" href="index.jsp">
+				<c:out value="${locale_page_title}" /></a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse"
 				data-target="#navbarSupportedContent"
 				aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -53,51 +54,78 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item">
-						<a class="nav-link" href="index.jsp"> <c:out value="${navbar_link_main_page}"/><span class="sr-only">(current)</span></a>
+						<a class="nav-link" href="index.jsp">
+							<c:out value="${navbar_link_main_page}" />
+							<span class="sr-only">(current)</span></a>
 					</li>
-					<li class="nav-item"><a class="nav-link" href="#"><c:out value="${navbar_link_movies}"/></a></li>
-					<li class="nav-item"><a class="nav-link" href="#"><c:out value="${navbar_link_reviews}"/></a></li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">
+							<c:out value="${navbar_link_movies}" /></a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">
+							<c:out value="${navbar_link_reviews}" /></a>
+					</li>
 				</ul>
-				<form class="form-inline my-2 my-lg-0" method="get" action="FrontController">
-					<input class="form-control mr-sm-2" type="search" aria-label="Search" name="searchText">
-					<button class="btn btn-dark my-2 my-sm-0" type="submit"><c:out value="${navbar_link_search}"/></button>
-					<input type="hidden" name="command" value="SEARCH">
+				<form class="form-inline my-2 my-lg-0" method="get"
+					action="FrontController">
+					<input class="form-control mr-sm-2" type="search"
+						aria-label="Search" name="searchText">
+					<button class="btn btn-dark my-2 my-sm-0" type="submit">
+						<c:out value="${navbar_link_search}" />
+					</button>
+					<input type="hidden" name="command" value="search">
 				</form>
 				<ul class="navbar-nav mx-right">
 					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="logIn"
-						role="button" data-toggle="dropdown" aria-haspopup="true"
-						aria-expanded="false"><c:out value="${navbar_link_log_in}"/></a>
-						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="logIn">
-							<form class="dropdown-item" method="post" action="FrontController">
-								<div class="form-group">
-									<label for="emailOrName"><c:out value="${log_in_form_label_email_name}"/></label>
-									<input type="text" class="form-control" name="emailOrName" placeholder="<c:out value="${log_in_form_input_email_name}"/>">
+								<a class="nav-link dropdown-toggle" href="#" id="logIn"
+									role="button" data-toggle="dropdown" aria-haspopup="true"
+									aria-expanded="false"><c:out value="${navbar_link_log_in}" /></a>
+								<div class="dropdown-menu dropdown-menu-right"
+									aria-labelledby="logIn">
+									<form class="dropdown-item" method="post"
+										action="FrontController">
+										<div class="form-group">
+											<label for="emailOrlogin"><c:out
+													value="${log_in_form_label_email_name}" /></label>
+											<input type="text" class="form-control" name="emailOrlogin"
+												placeholder="<c:out value="${log_in_form_input_email_name}"/>">
+										</div>
+										<div class="form-group">
+											<label for="password">
+												<c:out value="${log_in_form_label_password}" />
+											</label>
+											<input type="password" class="form-control" name="password"
+												placeholder="<c:out value="${log_in_form_label_password}"/>">
+										</div>
+										<div class="form-check">
+											<label class="form-check-label">
+												<input type="checkbox" class="form-check-input" name="rememberUser">
+												<c:out value="${log_in_link_remember}" />
+											</label>
+										</div>
+										<input type="hidden" name="command" value="authentication">
+										<input type="hidden" name="url" value="${pageContext.request.requestURI}">
+										<button type="submit" class="btn btn-primary">
+											<c:out value="${log_in_button_log_in}" />
+										</button>
+									</form>
+									<div class="dropdown-divider"></div>
+									<a class="dropdown-item" href="#">
+										<c:out value="${log_in_link_sign_up}" /></a>
+									<a class="dropdown-item" href="#">
+										<c:out value="${log_in_link_forgot_password}" /></a>
 								</div>
-								<div class="form-group">
-									<label for="password"><c:out value="${log_in_form_label_password}"/></label>
-									<input type="password" class="form-control" name="password" placeholder="<c:out value="${log_in_form_label_password}"/>">
-								</div>
-								<div class="form-check">
-									<label class="form-check-label">
-										<input type="checkbox" class="form-check-input" name="remember">
-										<c:out value="${log_in_link_remember}"/>
-									</label>
-								</div>
-								<input type="hidden" name="command" value="AUTHENTICATION">
-								<button type="submit" class="btn btn-primary"><c:out value="${log_in_button_log_in}"/></button>
-							</form>
-							<div class="dropdown-divider"></div>
-								<a class="dropdown-item" href="registration"><c:out value="${log_in_link_sign_up}"/></a>
-								<a class="dropdown-item" href="#"><c:out value="${log_in_link_forgot_password}"/></a>
-							</div>
-					</li>
+						</li>
 					<form class="nav-item" method="post" action="FrontController">
-						<input  type="hidden" name="command" value="CHANGE_LANGUAGE">
+						<input type="hidden" name="command" value="change_language">
 						<div class="btn-group-vertical">
-							<button class="btn btn-dark btn-sm py-0 languages" name="local" type="submit" value="en_US">EN</button>
-							<button class="btn btn-dark btn-sm py-0 languages" name="local" type="submit" value="ru">RU</button>
-							<input type="hidden" name="url" value="${pageContext.request.requestURI}">
+							<button class="btn btn-dark btn-sm py-0 languages" name="locale"
+								type="submit" value="en_US">EN</button>
+							<button class="btn btn-dark btn-sm py-0 languages" name="locale"
+								type="submit" value="ru">RU</button>
+							<input type="hidden" name="url"
+								value="${pageContext.request.requestURI}">
 						</div>
 					</form>
 				</ul>
@@ -112,19 +140,19 @@
 				<div class="form-group">
 					<div class="form-group">
 						<label class="col-form-label" for="loginInput"><c:out value="${locale_reg_form_label_login}"/></label>
-						<input type="text" class="form-control"	id="loginInput" placeholder="<c:out value="${locale_reg_form_input_login}"/>">
+						<input type="text" class="form-control" name="login" id="loginInput" placeholder="<c:out value="${locale_reg_form_input_login}"/>">
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="emailInput"><c:out value="${locale_reg_form_label_email}"/></label>
-					<input type="email" class="form-control" id="emailInput" placeholder="<c:out value="${locale_reg_form_input_email}"/>">
+					<input type="email" class="form-control" name="email" id="emailInput" placeholder="<c:out value="${locale_reg_form_input_email}"/>">
 				</div>
 				<div class="form-group">
 					<label for="passwordInput"><c:out value="${locale_reg_form_label_password}"/></label>
-					<input type="password" class="form-control" id="passwordInput" placeholder="<c:out value="${locale_reg_form_input_password}"/>">
+					<input type="password" class="form-control" name="password" id="passwordInput" placeholder="<c:out value="${locale_reg_form_input_password}"/>">
 				</div>
 				<button type="submit" class="btn btn-primary"><c:out value="${locale_reg_form_button_submit}"/></button>
-				<input  type="hidden" name="command" value="REGISTRATION">
+				<input  type="hidden" name="command" value="registration">
 			</form>
 		</div>
 		<div class="col-3">Sidebar</div>
@@ -139,3 +167,4 @@
 	<script src="js/jquery-3.2.1.min.js"></script>
 	<script src="bootstrap/js/bootstrap.bundle.js"></script>
 </body>
+</html>

@@ -7,45 +7,32 @@
 <head>
 
 <fmt:setLocale value="${cookie.locale.value}" />
-<fmt:setBundle basename="by.tr.web.task_3_1.localization.locale"
-	var="locale" />
-<fmt:message bundle="${locale}" key="locale.navbar.link.main.page"
-	var="navbar_link_main_page" ></fmt:message>
-<fmt:message bundle="${locale}" key="locale.navbar.link.movies"
-	var="navbar_link_movies"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.navbar.link.reviews"
-	var="navbar_link_reviews"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.navbar.link.search"
-	var="navbar_link_search"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.navbar.link.log.in"
-	var="navbar_link_log_in"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.navbar.user.menu.log.off"
-	var="user_menu_log_off"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.navbar.user.menu.profile"
-	var="user_menu_profile"></fmt:message>		
-<fmt:message bundle="${locale}" key="locale.page.title"
-	var="locale_page_title"></fmt:message>
-<fmt:message bundle="${locale}"	key="locale.log.in.form.input.email.name"
-	var="log_in_form_input_email_name"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.log.in.form.input.password"
-	var="log_in_form_input_password"></fmt:message>
-<fmt:message bundle="${locale}"	key="locale.log.in.form.label.email.name"
-	var="log_in_form_label_email_name"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.log.in.form.label.password"
-	var="log_in_form_label_password"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.log.in.link.forgot.password"
-	var="log_in_link_forgot_password"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.log.in.link.sign.up"
-	var="log_in_link_sign_up"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.log.in.link.remember"
-	var="log_in_link_remember"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.log.in.button.log.in"
-	var="log_in_button_log_in"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.footer.text"
-	var="footer_text"></fmt:message>
+<fmt:setBundle basename="by.tr.web.task_3_1.localization.locale" var="locale"/>
+<fmt:message bundle="${locale}" key="locale.navbar.link.main.page" var="navbar_link_main_page"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.navbar.link.movies" var="navbar_link_movies"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.navbar.link.reviews" var="navbar_link_reviews"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.navbar.link.search" var="navbar_link_search"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.navbar.link.log.in" var="navbar_link_log_in"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.page.title" var="locale_page_title"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.page.title.registration" var="locale_page_title_registration"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.log.in.form.input.email.name" var="log_in_form_input_email_name"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.log.in.form.input.password" var="log_in_form_input_password"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.log.in.form.label.email.name" var="log_in_form_label_email_name"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.log.in.form.label.password" var="log_in_form_label_password"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.log.in.link.forgot.password" var="log_in_link_forgot_password"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.log.in.link.sign.up" var="log_in_link_sign_up"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.log.in.link.remember" var="log_in_link_remember"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.log.in.button.log.in" var="log_in_button_log_in"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.footer.text" var="footer_text"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.reg.form.button.submit" var="locale_reg_form_button_submit"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.reg.form.input.email" var="locale_reg_form_input_email"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.reg.form.input.login" var="locale_reg_form_input_login"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.reg.form.input.password" var="locale_reg_form_input_password"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.reg.form.label.email" var="locale_reg_form_label_email"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.reg.form.label.login" var="locale_reg_form_label_login"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.reg.form.label.password" var="locale_reg_form_label_password"></fmt:message>
 
-
-<title>${locale_page_title}</title>
+<title>${locale_page_title_registration}</title>
 <meta charset="utf-8">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -90,8 +77,7 @@
 					<input type="hidden" name="command" value="search">
 				</form>
 				<ul class="navbar-nav mx-right">
-					<li class="nav-item dropdown"><c:choose>
-							<c:when test="${sessionScope.authenticated != 'yes' }">
+					<li class="nav-item dropdown">
 								<a class="nav-link dropdown-toggle" href="#" id="logIn"
 									role="button" data-toggle="dropdown" aria-haspopup="true"
 									aria-expanded="false"><c:out value="${navbar_link_log_in}" /></a>
@@ -130,20 +116,7 @@
 									<a class="dropdown-item" href="#">
 										<c:out value="${log_in_link_forgot_password}" /></a>
 								</div>
-							</c:when>
-							<c:otherwise>
-								<a class="nav-link dropdown-toggle" href="#" id="navbar-user-menu"
-									role="button" data-toggle="dropdown" aria-haspopup="true"
-									aria-expanded="false"><c:out value="${sessionScope.user.login }"></c:out></a>
-								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbar-user-menu">
-									<a class="dropdown-item" href="profile">
-										<c:out value="${user_menu_profile}" /></a>
-									<div class="dropdown-divider"></div>	
-									<a class="dropdown-item" href="FrontController?command=log_off" >  
-										<c:out value="${user_menu_log_off}" /></a>
-								</div>
-							</c:otherwise>
-						</c:choose></li>
+						</li>
 					<form class="nav-item" method="post" action="FrontController">
 						<input type="hidden" name="command" value="change_language">
 						<div class="btn-group-vertical">
@@ -161,16 +134,17 @@
 	</header>
 	<main class="container-fluid">
 	<div class="row">
-		<div class="col-2"></div>
-		<div class="col-8">Content</div>
-		<div class="col-2"></div>
+		<div class="col-3">Sidebar</div>
+		<div class="col-6">
+			<div>message</div>
+
+		</div>
+		<div class="col-3">Sidebar</div>
 	</div>
 	</main>
 	<footer class="footer">
 		<div class="container-fluid  fixed-bottom">
-			<p class="text-center">
-				<c:out value="${footer_text}" />
-			</p>
+			<p class="text-center"><c:out value="${footer_text}"/></p>
 		</div>
 	</footer>
 

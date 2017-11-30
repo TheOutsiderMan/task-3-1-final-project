@@ -19,8 +19,7 @@ public class CommandProvider {
 		if (commands.isEmpty()) {
 			commands = initializer.initializeCommands();
 		}
-		String commandName = name.toUpperCase();
-		return commands.get(commandName);
+		return commands.get(name);
 	}
 	
 }
