@@ -6,12 +6,13 @@ import by.tr.web.task_3_1.domain.User;
 public class MySQLUserDAOImpl implements UserDAO {
 
 	@Override
-	public void createUser(User user) {
-		
+	public boolean createUser(User user) {
+
+		return false;
 	}
 
 	@Override
-	public User readUserByName(String name) {
+	public User readUserByLogin(String login) {
 
 		return null;
 	}

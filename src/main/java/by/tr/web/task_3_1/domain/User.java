@@ -1,16 +1,19 @@
 package by.tr.web.task_3_1.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class User implements Serializable {
-
-	private static final long serialVersionUID = -4779286554174922446L;
+	
+	private static final long serialVersionUID = 6037955903875781271L;
 	
 	private String login;
 	private String email;
+	private String password;
 	private Role role;
 	private double rating;
 	private Status status;
+	private Date registrationDate;
 
 	public User() {
 	}
@@ -29,6 +32,14 @@ public class User implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public Role getRole() {
@@ -55,15 +66,25 @@ public class User implements Serializable {
 		this.status = status;
 	}
 
+	public Date getRegistrationDate() {
+		return registrationDate;
+	}
+
+	public void setRegistrationDate(Date registrationDate) {
+		this.registrationDate = registrationDate;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((login == null) ? 0 : login.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		long temp;
 		temp = Double.doubleToLongBits(rating);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((registrationDate == null) ? 0 : registrationDate.hashCode());
 		result = prime * result + ((role == null) ? 0 : role.hashCode());
 		result = prime * result + ((status == null) ? 0 : status.hashCode());
 		return result;
@@ -88,7 +109,17 @@ public class User implements Serializable {
 				return false;
 		} else if (!login.equals(other.login))
 			return false;
+		if (password == null) {
+			if (other.password != null)
+				return false;
+		} else if (!password.equals(other.password))
+			return false;
 		if (Double.doubleToLongBits(rating) != Double.doubleToLongBits(other.rating))
+			return false;
+		if (registrationDate == null) {
+			if (other.registrationDate != null)
+				return false;
+		} else if (!registrationDate.equals(other.registrationDate))
 			return false;
 		if (role != other.role)
 			return false;
@@ -96,5 +127,5 @@ public class User implements Serializable {
 			return false;
 		return true;
 	}
-
+	
 }

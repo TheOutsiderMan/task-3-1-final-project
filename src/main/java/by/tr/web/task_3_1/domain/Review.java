@@ -1,13 +1,16 @@
 package by.tr.web.task_3_1.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Review implements Serializable {
-	private static final long serialVersionUID = -8502364969152284502L;
+	
+	private static final long serialVersionUID = 1254537535436209174L;
 	
 	private String textReview;
 	private User author;
 	private Movie reviewedMovie;
+	private Date additionDate;
 
 	public Review() {
 
@@ -37,10 +40,19 @@ public class Review implements Serializable {
 		this.reviewedMovie = reviewedMovie;
 	}
 
+	public Date getAdditionDate() {
+		return additionDate;
+	}
+
+	public void setAdditionDate(Date additionDate) {
+		this.additionDate = additionDate;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((additionDate == null) ? 0 : additionDate.hashCode());
 		result = prime * result + ((author == null) ? 0 : author.hashCode());
 		result = prime * result + ((reviewedMovie == null) ? 0 : reviewedMovie.hashCode());
 		result = prime * result + ((textReview == null) ? 0 : textReview.hashCode());
@@ -56,6 +68,11 @@ public class Review implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Review other = (Review) obj;
+		if (additionDate == null) {
+			if (other.additionDate != null)
+				return false;
+		} else if (!additionDate.equals(other.additionDate))
+			return false;
 		if (author == null) {
 			if (other.author != null)
 				return false;

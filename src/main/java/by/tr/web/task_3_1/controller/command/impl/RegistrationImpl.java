@@ -18,10 +18,14 @@ public class RegistrationImpl implements Command {
 		String login = request.getParameter(ParameterName.LOGIN);
 		String email = request.getParameter(ParameterName.EMAIL);
 		String password = request.getParameter(ParameterName.PASSWORD);
+		String passwordControl = request.getParameter(ParameterName.PASSWORD_CONTROL);
 		
 		ServiceFactory factory = ServiceFactory.getInstance();
 		UserService userService = factory.getUserService();
-		Boolean registered = userService.registerUser(login, email, password);
+		Boolean registered = false;
+		if (password.equals(passwordControl)) {
+			registered = userService.registerUser(login, email, password);
+		}
 		request.setAttribute("registered", registered);
 		request.getRequestDispatcher("after-registration.jsp").forward(request, response);
 	}

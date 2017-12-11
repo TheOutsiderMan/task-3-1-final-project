@@ -4,9 +4,9 @@ import by.tr.web.task_3_1.domain.User;
 
 public interface UserDAO {
 
-	void createUser(User user);
+	boolean createUser(User user);
 
-	User readUserByName(String name);
+	User readUserByLogin(String login);
 
 	User readUserByEmail(String email);
 

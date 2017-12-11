@@ -151,6 +151,10 @@
 					<label for="passwordInput"><c:out value="${locale_reg_form_label_password}"/></label>
 					<input type="password" class="form-control" name="password" id="passwordInput" placeholder="<c:out value="${locale_reg_form_input_password}"/>">
 				</div>
+				<div class="form-group">
+					<label for="passwordControlInput"><c:out value="${locale_reg_form_label_password}"/></label>
+					<input type="password" class="form-control" name="passwordControl" id="passwordControlInput" placeholder="<c:out value="${locale_reg_form_input_password}"/>">
+				</div>
 				<button type="submit" class="btn btn-primary"><c:out value="${locale_reg_form_button_submit}"/></button>
 				<input  type="hidden" name="command" value="registration">
 			</form>

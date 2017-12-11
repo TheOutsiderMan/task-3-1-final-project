@@ -10,5 +10,7 @@ public final class ParameterName {
 	public static final String EMAIL_OR_lOGIN= "emailOrlogin";
 	public static final String LOGIN = "login";
 	public static final String EMAIL = "email";
+	public static final String PASSWORD_CONTROL = "passwordControl";
+	
 	
 }
