@@ -7,7 +7,7 @@
 <head>
 
 <fmt:setLocale value="${cookie.locale.value}" />
-<fmt:setBundle basename="by.tr.web.task_3_1.localization.locale" var="locale"/>
+<fmt:setBundle basename="localization.locale" var="locale"/>
 <fmt:message bundle="${locale}" key="locale.navbar.link.main.page" var="navbar_link_main_page"></fmt:message>
 <fmt:message bundle="${locale}" key="locale.navbar.link.movies" var="navbar_link_movies"></fmt:message>
 <fmt:message bundle="${locale}" key="locale.navbar.link.reviews" var="navbar_link_reviews"></fmt:message>
@@ -31,6 +31,9 @@
 <fmt:message bundle="${locale}" key="locale.reg.form.label.email" var="locale_reg_form_label_email"></fmt:message>
 <fmt:message bundle="${locale}" key="locale.reg.form.label.login" var="locale_reg_form_label_login"></fmt:message>
 <fmt:message bundle="${locale}" key="locale.reg.form.label.password" var="locale_reg_form_label_password"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.reg.form.label.password.check" var="locale_reg_form_label_password_check"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.reg.form.input.password.check" var="locale_reg_form_input_password_check"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.reg.form.checkbox.label" var="locale_reg_form_checkbox_label"></fmt:message>
 
 <title>${locale_page_title_registration}</title>
 <meta charset="utf-8">
@@ -152,11 +155,18 @@
 					<input type="password" class="form-control" name="password" id="passwordInput" placeholder="<c:out value="${locale_reg_form_input_password}"/>">
 				</div>
 				<div class="form-group">
-					<label for="passwordControlInput"><c:out value="${locale_reg_form_label_password}"/></label>
-					<input type="password" class="form-control" name="passwordControl" id="passwordControlInput" placeholder="<c:out value="${locale_reg_form_input_password}"/>">
+					<label for="passwordControlInput"><c:out value="${locale_reg_form_label_password_check}"/></label>
+					<input type="password" class="form-control" name="passwordControl" id="passwordControlInput" placeholder="<c:out value="${locale_reg_form_input_password_check}"/>">
+				</div>
+				<div class="form-check">
+				    <label class="form-check-label">
+				      <input type="checkbox" class="form-check-input" name="agreement">
+				      <c:out value="${locale_reg_form_checkbox_label}"></c:out>
+				    </label>
 				</div>
 				<button type="submit" class="btn btn-primary"><c:out value="${locale_reg_form_button_submit}"/></button>
 				<input  type="hidden" name="command" value="registration">
+				
 			</form>
 		</div>
 		<div class="col-3">Sidebar</div>

@@ -8,7 +8,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>FrontController</servlet-name>
-		<url-pattern>/FrontController</url-pattern>
+		<url-pattern>/app</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>RegistrationPage</servlet-name>
@@ -18,8 +18,20 @@
 		<servlet-name>RegistrationPage</servlet-name>
 		<url-pattern>/registration</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>AfterRegistration</servlet-name>
+		<jsp-file>/jsp/after-registration.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AfterRegistration</servlet-name>
+		<url-pattern>/after-registration</url-pattern>
+	</servlet-mapping>
+	
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
-  
+  	<error-page>
+  		<error-code>404</error-code>
+  		<location>/jsp/error.jsp</location>
+  	</error-page>
 </web-app>

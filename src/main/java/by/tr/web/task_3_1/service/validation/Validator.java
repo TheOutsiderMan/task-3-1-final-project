@@ -7,9 +7,9 @@ public class Validator {
 	private static final int EMAIL_MAX_LENGTH = 36;
 	private static final int LOGIN_MAX_LENGTH = 36;
 	private static final int LOGIN_MIN_LENGTH = 6;
-	private static final String REGEX_PASSWORD = "[\\w^_]{6;}";
+	private static final String REGEX_PASSWORD = "[\\w^_]{6,}";
 	private static final String REGEX_EMAIL = "[a-zA-Z]+@[a-zA-Z]+\\.[a-zA-Z]+";
-	private static final String REGEX_LOGIN = "^[a-zA-Zа-яА-Я]{1}\\w{5;}$";
+	private static final String REGEX_LOGIN = "^[a-zA-Zа-яА-Я]{1}\\w{5,}$";
 
 	public boolean validateLogin(String login) {
 		if (isEmptyOrNull(login)) {

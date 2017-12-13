@@ -1,6 +1,7 @@
 package by.tr.web.task_3_1.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +12,10 @@ import org.xml.sax.SAXException;
 
 import by.tr.web.task_3_1.controller.command.Command;
 import by.tr.web.task_3_1.controller.command.CommandProvider;
+import by.tr.web.task_3_1.dao.connection_pool.ConnectionPool;
+import by.tr.web.task_3_1.dao.exception.DAOException;
+import by.tr.web.task_3_1.service.exception.ServiceException;
+import by.tr.web.task_3_1.service.util.ConnectionPoolInitializer;
 
 public class FrontController extends HttpServlet {
 	
@@ -19,10 +24,31 @@ public class FrontController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
       
 	private CommandProvider provider = new CommandProvider();
-    
+	
 	public FrontController() {
         super();
     }
+	
+	
+	@Override
+	public void init() throws ServletException {
+		super.init();
+		try {
+			ConnectionPoolInitializer.getInitializer().initializeConnectionPool();
+		} catch (ServiceException e) {
+			//log
+		}
+	}
+	
+	@Override
+	public void destroy() {
+		super.destroy();
+		try {
+			ConnectionPoolInitializer.getInitializer().closeAllConnections();
+		} catch (ServiceException e) {
+			//log
+		}
+	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding(UTF_8);
@@ -34,12 +60,16 @@ public class FrontController extends HttpServlet {
 			command.execute(request, response);
 		} catch (ClassNotFoundException e) {
 			response.sendError(404);
+			//log
 		} catch (InstantiationException e) {
 			response.sendError(404);
+			//log
 		} catch (IllegalAccessException e) {
 			response.sendError(404);
+			//log
 		} catch (SAXException e) {
 			response.sendError(404);
+			//log
 		}
 		
 	}
@@ -54,12 +84,16 @@ public class FrontController extends HttpServlet {
 			command.execute(request, response);
 		} catch (ClassNotFoundException e) {
 			response.sendError(404);
+			//log
 		} catch (InstantiationException e) {
 			response.sendError(404);
+			//log
 		} catch (IllegalAccessException e) {
 			response.sendError(404);
+			//log
 		} catch (SAXException e) {
 			response.sendError(404);
+			//log
 		}
 	}
 

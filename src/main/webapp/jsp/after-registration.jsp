@@ -7,7 +7,7 @@
 <head>
 
 <fmt:setLocale value="${cookie.locale.value}" />
-<fmt:setBundle basename="by.tr.web.task_3_1.localization.locale" var="locale"/>
+<fmt:setBundle basename="localization.locale" var="locale"/>
 <fmt:message bundle="${locale}" key="locale.navbar.link.main.page" var="navbar_link_main_page"></fmt:message>
 <fmt:message bundle="${locale}" key="locale.navbar.link.movies" var="navbar_link_movies"></fmt:message>
 <fmt:message bundle="${locale}" key="locale.navbar.link.reviews" var="navbar_link_reviews"></fmt:message>
@@ -24,13 +24,10 @@
 <fmt:message bundle="${locale}" key="locale.log.in.link.remember" var="log_in_link_remember"></fmt:message>
 <fmt:message bundle="${locale}" key="locale.log.in.button.log.in" var="log_in_button_log_in"></fmt:message>
 <fmt:message bundle="${locale}" key="locale.footer.text" var="footer_text"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.reg.form.button.submit" var="locale_reg_form_button_submit"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.reg.form.input.email" var="locale_reg_form_input_email"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.reg.form.input.login" var="locale_reg_form_input_login"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.reg.form.input.password" var="locale_reg_form_input_password"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.reg.form.label.email" var="locale_reg_form_label_email"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.reg.form.label.login" var="locale_reg_form_label_login"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.reg.form.label.password" var="locale_reg_form_label_password"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.reg.after.button" var="locale_reg_after_button"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.reg.after.message.not.ok" var="message_not_ok"></fmt:message>
+<fmt:message bundle="${locale}" key="locale.reg.after.message.ok" var="message_ok"></fmt:message>
+
 
 <title>${locale_page_title_registration}</title>
 <meta charset="utf-8">
@@ -136,8 +133,20 @@
 	<div class="row">
 		<div class="col-3">Sidebar</div>
 		<div class="col-6">
-			<div>message</div>
-
+			<c:choose>
+				<c:when test="${requestScope.registered}">
+					<div>
+						<c:out value="${message_ok }"></c:out>
+					</div>
+				</c:when>
+				<c:otherwise>
+					<div>
+						<c:out value="${message_not_ok }"></c:out>
+					</div>
+				</c:otherwise>
+			</c:choose>
+			
+			<div><a class="btn btn-primary" href="index.jsp" role="button"><c:out value="${locale_reg_after_button }"></c:out></a></div>
 		</div>
 		<div class="col-3">Sidebar</div>
 	</div>

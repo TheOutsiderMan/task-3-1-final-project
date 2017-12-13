@@ -7,7 +7,7 @@
 <head>
 
 <fmt:setLocale value="${cookie.locale.value}" />
-<fmt:setBundle basename="by.tr.web.task_3_1.localization.locale"
+<fmt:setBundle basename="localization.locale"
 	var="locale" />
 <fmt:message bundle="${locale}" key="locale.navbar.link.main.page"
 	var="navbar_link_main_page" ></fmt:message>
@@ -125,7 +125,7 @@
 										</button>
 									</form>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" href="#">
+									<a class="dropdown-item" href="registration">
 										<c:out value="${log_in_link_sign_up}" /></a>
 									<a class="dropdown-item" href="#">
 										<c:out value="${log_in_link_forgot_password}" /></a>
@@ -161,9 +161,9 @@
 	</header>
 	<main class="container-fluid">
 	<div class="row">
-		<div class="col-2"></div>
-		<div class="col-8">Content</div>
-		<div class="col-2"></div>
+		<div class="col-3"></div>
+		<div class="col-6">Content</div>
+		<div class="col-3"></div>
 	</div>
 	</main>
 	<footer class="footer">

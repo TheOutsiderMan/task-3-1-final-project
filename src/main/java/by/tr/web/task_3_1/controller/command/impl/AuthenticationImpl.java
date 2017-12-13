@@ -13,9 +13,11 @@ import by.tr.web.task_3_1.controller.command.Command;
 import by.tr.web.task_3_1.domain.User;
 import by.tr.web.task_3_1.service.ServiceFactory;
 import by.tr.web.task_3_1.service.UserService;
+import by.tr.web.task_3_1.service.exception.ServiceException;
 
 public class AuthenticationImpl implements Command{
 	
+	private static final String ATTR_USER = "user";
 	private static final String EMAIL_TRIGGER = "@";
 	private static final String EMPTY_STRING = "";
 	private static final String REGEX_REPLACE = ".+/";
@@ -38,9 +40,21 @@ public class AuthenticationImpl implements Command{
 		UserService userService = factory.getUserService();
 		User authenticatedUser = null;
 		if (emailOrName.contains(EMAIL_TRIGGER)) {
-			authenticatedUser = userService.authenticateUserByEmail(emailOrName, password);
+			try {
+				authenticatedUser = userService.authenticateUserByEmail(emailOrName, password);
+			} catch (ServiceException e) {
+				//log
+				response.sendError(404);
+				return;
+			}
 		} else {
-			authenticatedUser = userService.authenticateUserByLogin(emailOrName, password);
+			try {
+				authenticatedUser = userService.authenticateUserByLogin(emailOrName, password);
+			} catch (ServiceException e) {
+				//log
+				response.sendError(404);
+				return;
+			}
 		}
 		if (rememberUser == null) {
 			rememberUser = EMPTY_STRING;
@@ -50,7 +64,7 @@ public class AuthenticationImpl implements Command{
 			if (authenticatedUser != null) {
 				session.setAttribute(AUTHENTICATED, AUTHENTICATED_TRUE);
 				session.setMaxInactiveInterval(0);
-				session.setAttribute("user", authenticatedUser);
+				session.setAttribute(ATTR_USER, authenticatedUser);
 			} else {
 				session.setAttribute(AUTHENTICATED, AUTHENTICATED_FALSE);
 			}
@@ -58,7 +72,7 @@ public class AuthenticationImpl implements Command{
 		} else {
 			if (authenticatedUser != null) {
 				session.setAttribute(AUTHENTICATED, AUTHENTICATED_TRUE);
-				session.setAttribute("user", authenticatedUser);
+				session.setAttribute(ATTR_USER, authenticatedUser);
 			} else {
 				session.setAttribute(AUTHENTICATED, AUTHENTICATED_FALSE);
 			}

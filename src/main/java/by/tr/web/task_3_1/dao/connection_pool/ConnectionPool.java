@@ -12,6 +12,9 @@ import by.tr.web.task_3_1.dao.exception.DAOException;
 public final class ConnectionPool {
 	
 	private static ConnectionPool connectionPool = new ConnectionPool();
+	
+	private DBResourceManager resourceManager = DBResourceManager.getInstance();
+	
 	private BlockingQueue<Connection> connectionQueue;
 	private BlockingQueue<Connection> givenAwayConQueue;
 	
@@ -22,7 +25,6 @@ public final class ConnectionPool {
 	private int poolSize;
 	
 	private ConnectionPool() {
-		DBResourceManager resourceManager = DBResourceManager.getInstance();
 		this.driverName = resourceManager.getValue(DBParametres.DB_DRIVER);
 		this.url = resourceManager.getValue(DBParametres.DB_URL);
 		this.user = resourceManager.getValue(DBParametres.DB_USER);
@@ -50,19 +52,24 @@ public final class ConnectionPool {
 		}
 	}
 	
-	public void dispose() throws SQLException {
+	public void dispose() throws DAOException {
 		closeConnectionsQueue(connectionQueue);
 		closeConnectionsQueue(givenAwayConQueue);
 	}
 	
 	
-	private void closeConnectionsQueue(BlockingQueue<Connection> queue) throws SQLException {
+	private void closeConnectionsQueue(BlockingQueue<Connection> queue) throws DAOException {
 		Connection connection;
 		while ((connection = queue.poll()) != null) {
-			if(!connection.getAutoCommit()) {
-				connection.commit();
+			try {
+				if(!connection.getAutoCommit()) {
+					connection.commit();
+				}
+				connection.close();
+			} catch (SQLException e) {
+				throw new DAOException(e);
 			}
-			connection.close();
+			
 		}
 	}
 	

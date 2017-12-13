@@ -3,7 +3,7 @@ package by.tr.web.task_3_1.dao.connection_pool;
 import java.util.ResourceBundle;
 
 public class DBResourceManager {
-	private static final String DB_PROPERTIES = "by.tr.web.task_3_1.dao.connection_pool.db.properties";
+	private static final String DB_PROPERTIES = "by.tr.web.task_3_1.dao.connection_pool.db";
 
 	private static final DBResourceManager resourceManager = new DBResourceManager();
 	
