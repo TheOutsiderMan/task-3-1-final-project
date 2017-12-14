@@ -13,6 +13,5 @@ public final class ParameterName {
 	public static final String PASSWORD_CONTROL = "passwordControl";
 	public static final String ACTION = "action";
 	public static final String AGREEMENT = "agreement";
-	
-	
+	public static final String PAGE = "page";	
 }

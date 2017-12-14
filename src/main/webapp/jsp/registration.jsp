@@ -71,13 +71,13 @@
 					</li>
 				</ul>
 				<form class="form-inline my-2 my-lg-0" method="get"
-					action="FrontController">
+					action="app">
 					<input class="form-control mr-sm-2" type="search"
 						aria-label="Search" name="searchText">
 					<button class="btn btn-dark my-2 my-sm-0" type="submit">
 						<c:out value="${navbar_link_search}" />
 					</button>
-					<input type="hidden" name="command" value="search">
+					<input type="hidden" name="action" value="search">
 				</form>
 				<ul class="navbar-nav mx-right">
 					<li class="nav-item dropdown">
@@ -87,7 +87,7 @@
 								<div class="dropdown-menu dropdown-menu-right"
 									aria-labelledby="logIn">
 									<form class="dropdown-item" method="post"
-										action="FrontController">
+										action="app">
 										<div class="form-group">
 											<label for="emailOrlogin"><c:out
 													value="${log_in_form_label_email_name}" /></label>
@@ -107,7 +107,7 @@
 												<c:out value="${log_in_link_remember}" />
 											</label>
 										</div>
-										<input type="hidden" name="command" value="authentication">
+										<input type="hidden" name="action" value="authentication">
 										<input type="hidden" name="url" value="${pageContext.request.requestURI}">
 										<button type="submit" class="btn btn-primary">
 											<c:out value="${log_in_button_log_in}" />
@@ -120,8 +120,8 @@
 										<c:out value="${log_in_link_forgot_password}" /></a>
 								</div>
 						</li>
-					<form class="nav-item" method="post" action="FrontController">
-						<input type="hidden" name="command" value="change_language">
+					<form class="nav-item" method="post" action="app">
+						<input type="hidden" name="action" value="change_language">
 						<div class="btn-group-vertical">
 							<button class="btn btn-dark btn-sm py-0 languages" name="locale"
 								type="submit" value="en_US">EN</button>
@@ -139,7 +139,7 @@
 	<div class="row">
 		<div class="col-3">Sidebar</div>
 		<div class="col-6">
-			<form method="post" action="FrontController">
+			<form method="post" action="app">
 				<div class="form-group">
 					<div class="form-group">
 						<label class="col-form-label" for="loginInput"><c:out value="${locale_reg_form_label_login}"/></label>
@@ -165,7 +165,7 @@
 				    </label>
 				</div>
 				<button type="submit" class="btn btn-primary"><c:out value="${locale_reg_form_button_submit}"/></button>
-				<input  type="hidden" name="command" value="registration">
+				<input  type="hidden" name="action" value="registration">
 				
 			</form>
 		</div>

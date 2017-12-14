@@ -21,5 +21,8 @@
 		<name>log_off</name>
 		<class>by.tr.web.task_3_1.controller.command.impl.LogOffImpl</class>
 	</command>
-	
+	<command>
+		<name>init_view</name>
+		<class>by.tr.web.task_3_1.controller.command.impl.PageViewInitialzeImpl</class>
+	</command>
 </commands>

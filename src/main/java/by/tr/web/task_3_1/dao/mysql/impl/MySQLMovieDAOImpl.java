@@ -10,15 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import by.tr.web.task_3_1.dao.ActorDAO;
+import by.tr.web.task_3_1.dao.DAOAbstractFactory;
 import by.tr.web.task_3_1.dao.MovieDAO;
 import by.tr.web.task_3_1.dao.connection_pool.ConnectionPool;
 import by.tr.web.task_3_1.dao.exception.DAOException;
+import by.tr.web.task_3_1.dao.mysql.MySQLDAOFactory;
 import by.tr.web.task_3_1.domain.Actor;
 import by.tr.web.task_3_1.domain.Movie;
 
 public class MySQLMovieDAOImpl implements MovieDAO{
 
-	private static final String SELECT_ACTORS_ONE_MOVIE = "SELECT act_first_name, act_second_name, act_age FROM actors JOIN actors_translate ON actors.act_id=actors_translate.act_id WHERE mov_id=? AND lang_short_name=?";
+	private static final String SELECT_RANDOM_MOVIES = "SELECT movies_translate.mov_id, mov_title, mov_director, mov_genre, mov_release_year, mov_length, mov_rating FROM movies_translate JOIN movies ON movies_translate.mov_id=movies.mov_id WHERE lang_short_name=? ORDER BY RAND() LIMIT ?";
 	private static final String SELECT_ALL_MOVIES_ONE_TRANSLATION = "SELECT movies_translate.mov_id, mov_title, mov_director, mov_genre, mov_release_year, mov_length, mov_rating FROM movies_translate JOIN movies ON movies_translate.mov_id=movies.mov_id WHERE lang_short_name=?";
 	private static final String CREATE_MOVIE_TRANSLATE_QUERY = "INSERT INTO movies_translate (mov_id, lang_short_name, mov_title, mov_director, mov_genre) VALUES (?, ?, ?, ?, ?)";
 	private static final String CREATE_MOVIE_QUERY = "INSERT INTO movies (mov_release_year, mov_length, mov_rating, mov_addition_date) VALUES (?, ?, ?, ?)";
@@ -119,37 +122,26 @@ public class MySQLMovieDAOImpl implements MovieDAO{
 	@Override
 	public List<Movie> readAllMovies(String locale) throws DAOException {
 		Connection connection = null;
-		PreparedStatement statementMovie = null;
-		PreparedStatement statementActor = null;
-		ResultSet resultSetMovies = null;
-		ResultSet resultSetActors = null;
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
 		List<Movie> movies = new ArrayList<Movie>();
 		try {
 			connection = ConnectionPool.getInstance().takeConnection();
-			statementMovie = connection.prepareStatement(SELECT_ALL_MOVIES_ONE_TRANSLATION);
-			statementMovie.setString(1, locale);
-			resultSetMovies = statementMovie.executeQuery();
-			statementActor = connection.prepareStatement(SELECT_ACTORS_ONE_MOVIE);
-			while (resultSetMovies.next()) {
+			statement = connection.prepareStatement(SELECT_ALL_MOVIES_ONE_TRANSLATION);
+			statement.setString(1, locale);
+			resultSet = statement.executeQuery();
+			DAOAbstractFactory factory = MySQLDAOFactory.getInstance();
+			ActorDAO actorDAO = factory.getActorDAO();
+			while (resultSet.next()) {
 				Movie movie = new Movie();
-				int movieID = resultSetMovies.getInt(1);
-				movie.setTitle(resultSetMovies.getString(2));
-				movie.setDirector(resultSetMovies.getString(3));
-				movie.setGenre(resultSetMovies.getString(4));
-				movie.setYear(resultSetMovies.getInt(5));
-				movie.setLength(resultSetMovies.getInt(6));
-				movie.setMark(resultSetMovies.getDouble(7));
-				statementActor.setInt(1, movieID);
-				statementActor.setString(2, locale);
-				resultSetActors = statementActor.executeQuery();
-				List<Actor> actors =  new ArrayList<>();
-				while (resultSetActors.next()) {
-					Actor actor = new Actor();
-					actor.setFirstName(resultSetActors.getString(1));
-					actor.setSecondName(resultSetActors.getString(2));
-					actor.setAge(resultSetActors.getInt(3));
-					actors.add(actor);
-				}
+				int movieID = resultSet.getInt(1);
+				movie.setTitle(resultSet.getString(2));
+				movie.setDirector(resultSet.getString(3));
+				movie.setGenre(resultSet.getString(4));
+				movie.setYear(resultSet.getInt(5));
+				movie.setLength(resultSet.getInt(6));
+				movie.setMark(resultSet.getDouble(7));
+				List<Actor> actors =  actorDAO.readActorsFromOneMovie(movieID, locale);
 				movie.setActors(actors);
 				movies.add(movie);
 			}
@@ -158,30 +150,16 @@ public class MySQLMovieDAOImpl implements MovieDAO{
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		} finally {
-			if (resultSetActors != null) {
+			if (resultSet != null) {
 				try {
-					resultSetActors.close();
+					resultSet.close();
 				} catch (SQLException e) {
 					throw new DAOException(e);
 				}
 			}
-			if (resultSetMovies != null) {
+			if (statement != null) {
 				try {
-					resultSetMovies.close();
-				} catch (SQLException e) {
-					throw new DAOException(e);
-				}
-			}
-			if (statementActor != null) {
-				try {
-					statementActor.close();
-				} catch (SQLException e) {
-					throw new DAOException(e);
-				}
-			}
-			if (statementMovie != null) {
-				try {
-					statementMovie.close();
+					statement.close();
 				} catch (SQLException e) {
 					throw new DAOException(e);
 				}
@@ -200,9 +178,56 @@ public class MySQLMovieDAOImpl implements MovieDAO{
 	}
 
 	@Override
-	public List<Movie> readRandomMovies(int amount, String locale) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Movie> readRandomMovies(int amount, String locale) throws DAOException {
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		List<Movie> movies = new ArrayList<Movie>();
+		try {
+			connection = ConnectionPool.getInstance().takeConnection();
+			statement = connection.prepareStatement(SELECT_RANDOM_MOVIES);
+			statement.setString(1, locale);
+			statement.setInt(2, amount);
+			resultSet = statement.executeQuery();
+			DAOAbstractFactory factory = MySQLDAOFactory.getInstance();
+			ActorDAO actorDAO = factory.getActorDAO();
+			while (resultSet.next()) {
+				Movie movie = new Movie();
+				int movieID = resultSet.getInt(1);
+				movie.setTitle(resultSet.getString(2));
+				movie.setDirector(resultSet.getString(3));
+				movie.setGenre(resultSet.getString(4));
+				movie.setYear(resultSet.getInt(5));
+				movie.setLength(resultSet.getInt(6));
+				movie.setMark(resultSet.getDouble(7));
+				List<Actor> actors =  actorDAO.readActorsFromOneMovie(movieID, locale);
+				movie.setActors(actors);
+				movies.add(movie);
+			}
+		} catch (InterruptedException e) {
+			throw new DAOException(e);
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (SQLException e) {
+					throw new DAOException(e);
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					throw new DAOException(e);
+				}
+			}
+			if (connection != null) {
+				ConnectionPool.getInstance().releaseConnection(connection);				
+			}
+		}
+		return movies;
 	}
 
 	@Override

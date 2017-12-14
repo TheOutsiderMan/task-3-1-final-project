@@ -15,6 +15,8 @@ public interface ReviewDAO {
 	List<Review> readReviewsByUser(User user);
 
 	List<Review> readMovieReviews(Movie movie);
+	
+	List<Review> readAllReviews();
 
 	void deleteReview(Review review);
 }

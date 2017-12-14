@@ -53,7 +53,7 @@ public class FrontController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding(UTF_8);
 		
-		String commandName = request.getParameter(ParameterName.COMMAND);
+		String commandName = request.getParameter(ParameterName.ACTION);
 		Command command = null;
 		try {
 			command = provider.takeCommand(commandName);
@@ -77,7 +77,7 @@ public class FrontController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding(UTF_8);
 		
-		String commandName = request.getParameter(ParameterName.COMMAND);
+		String commandName = request.getParameter(ParameterName.ACTION);
 		Command command = null;
 		try {
 			command = provider.takeCommand(commandName);

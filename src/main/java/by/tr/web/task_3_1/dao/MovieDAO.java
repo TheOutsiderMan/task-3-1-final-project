@@ -14,7 +14,7 @@ public interface MovieDAO {
 
 	List<Movie> readMovieByTitle(String title);
 
-	List<Movie> readRandomMovies(int amount, String locale);
+	List<Movie> readRandomMovies(int amount, String locale) throws DAOException;
 
 	void updateMovieTitle(Movie movie, String title);
 

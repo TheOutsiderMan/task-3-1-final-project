@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,8 +15,9 @@ import by.tr.web.task_3_1.dao.exception.DAOException;
 import by.tr.web.task_3_1.domain.Actor;
 import by.tr.web.task_3_1.domain.Movie;
 
-public class MySQLActorDAOImpl implements ActorDAO{
+public class MySQLActorDAOImpl implements ActorDAO {
 
+	private static final String SELECT_ACTORS_ONE_MOVIE = "SELECT act_first_name, act_second_name, act_age FROM actors JOIN actors_translate ON actors.act_id=actors_translate.act_id WHERE mov_id=? AND lang_short_name=?";
 	private static final String INSERT_ACTOR_NAME = "INSERT INTO actors_translate (act_id, lang_short_name, act_first_name, act_second_name) VALUES (?, ?, ?, ?)";
 	private static final String LAST_INSERT_ID = "SELECT LAST_INSERT_ID()";
 	private static final String CREATE_ACTOR_AGE = "INSERT INTO actors (mov_id, act_age) VALUES((SELECT mov_id FROM movies_translate WHERE mov_title=?), ?)";
@@ -61,14 +63,14 @@ public class MySQLActorDAOImpl implements ActorDAO{
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		} finally {
-			if(resultSet != null) {
+			if (resultSet != null) {
 				try {
 					resultSet.close();
 				} catch (SQLException e) {
 					throw new DAOException(e);
 				}
 			}
-			if(lastID != null) {
+			if (lastID != null) {
 				try {
 					lastID.close();
 				} catch (SQLException e) {
@@ -89,7 +91,7 @@ public class MySQLActorDAOImpl implements ActorDAO{
 					throw new DAOException(e);
 				}
 			}
-			if(connection != null) {
+			if (connection != null) {
 				ConnectionPool.getInstance().releaseConnection(connection);
 			}
 		}
@@ -102,6 +104,52 @@ public class MySQLActorDAOImpl implements ActorDAO{
 	}
 
 	@Override
+	public List<Actor> readActorsFromOneMovie(int movieID, String locale) throws DAOException {
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		List<Actor> actors = new ArrayList<Actor>();
+		try {
+			connection = ConnectionPool.getInstance().takeConnection();
+			statement = connection.prepareStatement(SELECT_ACTORS_ONE_MOVIE);
+			statement.setInt(1, movieID);
+			statement.setString(2, locale);
+			resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				Actor actor = new Actor();
+				actor.setFirstName(resultSet.getString(1));
+				actor.setSecondName(resultSet.getString(2));
+				actor.setAge(resultSet.getInt(3));
+				actors.add(actor);
+			}
+
+		} catch (InterruptedException e) {
+			throw new DAOException(e);
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (SQLException e) {
+					throw new DAOException(e);
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					throw new DAOException(e);
+				}
+			}
+			if (connection != null) {
+				ConnectionPool.getInstance().releaseConnection(connection);
+			}
+		}
+		return actors;
+	}
+
+	@Override
 	public boolean isExistedActor(Actor actor) {
 		// TODO Auto-generated method stub
 		return false;
@@ -110,31 +158,31 @@ public class MySQLActorDAOImpl implements ActorDAO{
 	@Override
 	public void updateActorName(Actor actor, String firstName, String secondName) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void updateActorFirstName(Actor actor, String firstName) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void updateActorSecondName(Actor actor, String secondName) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void updateActorAge(Actor actor, int age) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void deleteActor(Actor actor) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

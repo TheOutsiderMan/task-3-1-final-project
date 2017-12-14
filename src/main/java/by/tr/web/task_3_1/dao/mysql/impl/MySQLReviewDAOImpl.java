@@ -33,8 +33,16 @@ public class MySQLReviewDAOImpl implements ReviewDAO {
 	}
 
 	@Override
+	public List<Review> readAllReviews() {
+
+		return null;
+	}
+
+	@Override
 	public void deleteReview(Review review) {
 		
 	}
+	
+	
 
 }
