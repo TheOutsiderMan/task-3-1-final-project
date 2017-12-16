@@ -1,38 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
- 	<display-name>Archetype Created Web Application</display-name>
- 	<servlet>
-		<display-name>FrontController</display-name>
-		<servlet-name>FrontController</servlet-name>
-		<servlet-class>by.tr.web.task_3_1.controller.FrontController</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>FrontController</servlet-name>
-		<url-pattern>/app</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>RegistrationPage</servlet-name>
-		<jsp-file>/jsp/registration.jsp</jsp-file>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>RegistrationPage</servlet-name>
-		<url-pattern>/registration</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>AfterRegistration</servlet-name>
-		<jsp-file>/jsp/after-registration.jsp</jsp-file>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>AfterRegistration</servlet-name>
-		<url-pattern>/after-registration</url-pattern>
-	</servlet-mapping>
-	
-	<welcome-file-list>
-		<welcome-file>index.jsp</welcome-file>
-		
-	</welcome-file-list>
-  	<error-page>
-  		<error-code>404</error-code>
-  		<location>/jsp/error.jsp</location>
-  	</error-page>
+  <display-name>Archetype Created Web Application</display-name>
+  <servlet>
+    <display-name>FrontController</display-name>
+    <servlet-name>FrontController</servlet-name>
+    <servlet-class>by.tr.web.kinorating.controller.FrontController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FrontController</servlet-name>
+    <url-pattern>/app</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>RegistrationPage</servlet-name>
+    <jsp-file>/jsp/registration.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>RegistrationPage</servlet-name>
+    <url-pattern>/registration</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>AfterRegistration</servlet-name>
+    <jsp-file>/WEB-INF/jsp/after-registration.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AfterRegistration</servlet-name>
+    <url-pattern>/after-registration</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>MoviesPage</servlet-name>
+    <jsp-file>/WEB-INF//jsp/movies.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>MoviesPage</servlet-name>
+    <url-pattern>/movies</url-pattern>
+  </servlet-mapping>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/WEB-INF//jsp/error.jsp</location>
+  </error-page>
 </web-app>

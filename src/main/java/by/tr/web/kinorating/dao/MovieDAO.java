@@ -1,0 +1,33 @@
+package by.tr.web.kinorating.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import by.tr.web.kinorating.dao.exception.DAOException;
+import by.tr.web.kinorating.domain.Movie;
+
+public interface MovieDAO {
+
+	boolean createMovie(Map<String, Movie> movie) throws DAOException;
+
+	List<Movie> readAllMovies(String locale) throws DAOException;
+
+	List<Movie> readMovieByTitle(String title);
+
+	List<Movie> readRandomMovies(int amount, String locale) throws DAOException;
+
+	void updateMovieTitle(Movie movie, String title);
+
+	void updateMovieLength(Movie movie, int length);
+
+	void updateMovieyear(Movie movie, int year);
+
+	void updateMovieDirector(Movie movie, String director);
+
+	void updateMovieGenre(Movie movie, String genre);
+
+	void updateMovieMark(Movie movie, double mark);
+
+	void deleteMovie(Movie movie);
+
+}
