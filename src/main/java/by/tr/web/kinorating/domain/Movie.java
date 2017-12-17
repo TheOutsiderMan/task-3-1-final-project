@@ -5,11 +5,11 @@ import java.util.Date;
 import java.util.List;
 
 public class Movie implements Serializable {
-
-	private static final long serialVersionUID = -4937571011621406522L;
-
+	
+	private static final long serialVersionUID = 2046639388603468585L;
+	
 	private String title;
-	private double mark;
+	private double rating;
 	private int year;
 	private int length;
 	private String director;
@@ -28,12 +28,12 @@ public class Movie implements Serializable {
 		this.title = title;
 	}
 
-	public double getMark() {
-		return mark;
+	public double getRating() {
+		return rating;
 	}
 
-	public void setMark(double mark) {
-		this.mark = mark;
+	public void setRating(double rating) {
+		this.rating = rating;
 	}
 
 	public int getYear() {
@@ -94,7 +94,7 @@ public class Movie implements Serializable {
 		result = prime * result + ((genre == null) ? 0 : genre.hashCode());
 		result = prime * result + length;
 		long temp;
-		temp = Double.doubleToLongBits(mark);
+		temp = Double.doubleToLongBits(rating);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		result = prime * result + year;
@@ -132,7 +132,7 @@ public class Movie implements Serializable {
 			return false;
 		if (length != other.length)
 			return false;
-		if (Double.doubleToLongBits(mark) != Double.doubleToLongBits(other.mark))
+		if (Double.doubleToLongBits(rating) != Double.doubleToLongBits(other.rating))
 			return false;
 		if (title == null) {
 			if (other.title != null)

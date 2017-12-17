@@ -2,10 +2,11 @@ package by.tr.web.kinorating.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 public class User implements Serializable {
 	
-	private static final long serialVersionUID = 6037955903875781271L;
+	private static final long serialVersionUID = -8375825709870310208L;
 	
 	private String login;
 	private String email;
@@ -14,6 +15,7 @@ public class User implements Serializable {
 	private double rating;
 	private Status status;
 	private Date registrationDate;
+	private Map<Movie, Integer> marks;
 
 	public User() {
 	}
@@ -74,12 +76,21 @@ public class User implements Serializable {
 		this.registrationDate = registrationDate;
 	}
 
+	public Map<Movie, Integer> getMarks() {
+		return marks;
+	}
+
+	public void setMarks(Map<Movie, Integer> marks) {
+		this.marks = marks;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((login == null) ? 0 : login.hashCode());
+		result = prime * result + ((marks == null) ? 0 : marks.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		long temp;
 		temp = Double.doubleToLongBits(rating);
@@ -108,6 +119,11 @@ public class User implements Serializable {
 			if (other.login != null)
 				return false;
 		} else if (!login.equals(other.login))
+			return false;
+		if (marks == null) {
+			if (other.marks != null)
+				return false;
+		} else if (!marks.equals(other.marks))
 			return false;
 		if (password == null) {
 			if (other.password != null)

@@ -3,26 +3,26 @@
 	xmlns="http://www.tr.web.final.task" xsi:schemaLocation="http://www.tr.web.final.task commands.xsd">
 	<command>
 		<name>search</name>
-		<class>by.tr.web.task_3_1.controller.command.impl.SearchImpl</class>
+		<class>by.tr.web.kinorating.controller.command.impl.SearchImpl</class>
 	</command>
 	<command>
 		<name>authentication</name>
-		<class>by.tr.web.task_3_1.controller.command.impl.AuthenticationImpl</class>
+		<class>by.tr.web.kinorating.controller.command.impl.AuthenticationImpl</class>
 	</command>
 	<command>
 		<name>registration</name>
-		<class>by.tr.web.task_3_1.controller.command.impl.RegistrationImpl</class>
+		<class>by.tr.web.kinorating.controller.command.impl.RegistrationImpl</class>
 	</command>
 	<command>
 		<name>change_language</name>
-		<class>by.tr.web.task_3_1.controller.command.impl.LanguageTogglerImpl</class>
+		<class>by.tr.web.kinorating.controller.command.impl.LanguageTogglerImpl</class>
 	</command>
 	<command>
 		<name>log_off</name>
-		<class>by.tr.web.task_3_1.controller.command.impl.LogOffImpl</class>
+		<class>by.tr.web.kinorating.controller.command.impl.LogOffImpl</class>
 	</command>
 	<command>
 		<name>init_view</name>
-		<class>by.tr.web.task_3_1.controller.command.impl.PageViewInitialzeImpl</class>
+		<class>by.tr.web.kinorating.controller.command.impl.PageViewInitialzeImpl</class>
 	</command>
 </commands>

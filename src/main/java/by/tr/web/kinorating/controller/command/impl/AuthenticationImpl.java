@@ -24,7 +24,6 @@ public class AuthenticationImpl implements Command{
 	private static final String AUTHENTICATED_FALSE = "no";
 	private static final String AUTHENTICATED_TRUE = "yes";
 	private static final String AUTHENTICATED = "authenticated";
-	private static final String INPUT_CHECKED = "on";
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -56,26 +55,19 @@ public class AuthenticationImpl implements Command{
 				return;
 			}
 		}
-		if (rememberUser == null) {
-			rememberUser = EMPTY_STRING;
+		boolean rememberInput = false;
+		if (rememberUser != null) {
+			rememberInput = true;
 		}
 		HttpSession session =  request.getSession(true);
-		if (rememberUser.equalsIgnoreCase(INPUT_CHECKED)) {
-			if (authenticatedUser != null) {
-				session.setAttribute(AUTHENTICATED, AUTHENTICATED_TRUE);
+		if (!authenticatedUser.getLogin().isEmpty()) {
+			session.setAttribute(AUTHENTICATED, AUTHENTICATED_TRUE);
+			if (rememberInput) {
 				session.setMaxInactiveInterval(0);
-				session.setAttribute(ATTR_USER, authenticatedUser);
-			} else {
-				session.setAttribute(AUTHENTICATED, AUTHENTICATED_FALSE);
 			}
-			
+			session.setAttribute(ATTR_USER, authenticatedUser);
 		} else {
-			if (authenticatedUser != null) {
-				session.setAttribute(AUTHENTICATED, AUTHENTICATED_TRUE);
-				session.setAttribute(ATTR_USER, authenticatedUser);
-			} else {
-				session.setAttribute(AUTHENTICATED, AUTHENTICATED_FALSE);
-			}
+			session.setAttribute(AUTHENTICATED, AUTHENTICATED_FALSE);
 		}
 		request.getRequestDispatcher(forwardURL).forward(request, response);;
 	}

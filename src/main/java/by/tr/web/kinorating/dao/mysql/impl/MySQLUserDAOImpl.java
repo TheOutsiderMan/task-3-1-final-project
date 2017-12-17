@@ -5,17 +5,31 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.codec.digest.DigestUtils;
 
+import by.tr.web.kinorating.dao.DAOAbstractFactory;
+import by.tr.web.kinorating.dao.MovieDAO;
 import by.tr.web.kinorating.dao.UserDAO;
 import by.tr.web.kinorating.dao.connection_pool.ConnectionPool;
 import by.tr.web.kinorating.dao.exception.DAOException;
+import by.tr.web.kinorating.dao.mysql.MySQLDAOFactory;
+import by.tr.web.kinorating.domain.Movie;
 import by.tr.web.kinorating.domain.Role;
 import by.tr.web.kinorating.domain.Status;
 import by.tr.web.kinorating.domain.User;
 
 public class MySQLUserDAOImpl implements UserDAO {
 	
+	private static final String GET_USER_MARKS = "SELECT * FROM user_marks WHERE user_id=?";
+	private static final String UPDATE_USER_MARK_QUERY = "UPDATE user_marks SET user_mark=? WHERE movie_id=?";
+	private static final String SELECT_OLD_USER_MARK_QUERY = "SELECT * FROM user_marks WHERE user_id=(SELECT us_id FROM users WHERE us_login=?) AND movie_id=(SELECT mov_id FROM movies_translate WHERE mov_title=? AND mov_director=?)";
+	private static final String DELETE_USER_MARK_QUERY = "DELETE FROM user_marks WHERE user_id=(SELECT us_id FROM users WHERE us_login=?) AND movie_id=(SELECT mov_id FROM movies_translate WHERE mov_title=? AND mov_director=?)";
+	private static final String ADD_USER_MARK_TO_MOVIE_QUERY = "INSERT INTO user marks (user_id, movie_id, user_mark) VALUES ((SELECT us_id FROM users WHERE us_login=?), (SELECT mov_id FROM movies_translate WHERE mov_title=? AND mov_director=?), ?)";
+	private static final String SELECT_USER_MARK_TO_MOVIE_QUERy = "SELECT * FROM us_marks WHERE user_id=(SELECT us_id FROM users WHERE login=?) AND movie_id=(SELECT mov_id FROM movies_translate WHERE mov_title=? AND mov_director=?)";
+	private static final String USER_EXISTS_QUERY = "SELECT us_id FROM users WHERE us_login=? OR us_email=?";
 	private static final String UPDATE_USER_STATUS_QUERY = "UPDATE users SET us_status=? WHERE us_login=?";
 	private static final String UPDATE_USER_RATING_QUERY = "UPDATE users SET us_rating=? WHERE us_login=?";
 	private static final String UPDATE_USER_ROLE_QUERY = "UPDATE users SET us_role=? WHERE us_login=?";
@@ -34,17 +48,19 @@ public class MySQLUserDAOImpl implements UserDAO {
 		int rowCount = 0;
 		try {
 			connection = ConnectionPool.getInstance().takeConnection();
-			if (readUserByLogin(user.getLogin()) != null) {
+			String login = user.getLogin();
+			String email = user.getEmail();
+			if (isExistedUser(login)) {
 				return false;
 			}
-			if (readUserByEmail(user.getEmail()) != null) {
+			if (isExistedUser(email)) {
 				return false;
 			}
 			preparedStatement = connection.prepareStatement(CREATE_USER_QUERY);
-			preparedStatement.setString(1, user.getLogin());
+			preparedStatement.setString(1, login);
 			String password = DigestUtils.md5Hex(user.getPassword());
 			preparedStatement.setString(2, password);
-			preparedStatement.setString(3, user.getEmail());
+			preparedStatement.setString(3, email);
 			preparedStatement.setString(4, user.getRole().toString());
 			preparedStatement.setString(5, user.getStatus().toString());
 			preparedStatement.setDouble(6, user.getRating());
@@ -74,23 +90,43 @@ public class MySQLUserDAOImpl implements UserDAO {
 		}
 	}
 	
+	private boolean isExistedUser(String string) throws DAOException {
+		Connection connection = null;
+		PreparedStatement statement= null;
+		ResultSet resultSet = null;
+		try {
+			connection = ConnectionPool.getInstance().takeConnection();
+			statement = connection.prepareStatement(USER_EXISTS_QUERY);
+			statement.setString(1, string);
+			statement.setString(2, string);
+			resultSet = statement.executeQuery();
+			if (resultSet.next()) {
+				return true;
+			}
+		} catch (InterruptedException e) {
+			throw new DAOException(e);
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		}
+		return false;
+	}
 	
 	@Override
 	public User readUserByLogin(String login) throws DAOException {
 		Connection connection = null;
 		PreparedStatement statement= null;
 		ResultSet resultSet = null;
-		User user = null;
+		User user = new User();
 		try {
 			connection = ConnectionPool.getInstance().takeConnection();
 			statement = connection.prepareStatement(SELECT_USER_BY_LOGIN);
 			statement.setString(1, login);
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
-				user = new User();
+				int userID = resultSet.getInt(1);
 				user.setLogin(resultSet.getString(2));
-				user.setPassword(EMPTY_STRING);
-				user.setEmail(resultSet.getString(3));
+				user.setPassword(resultSet.getString(3));
+				user.setEmail(resultSet.getString(4));
 				String role = resultSet.getString(5).toUpperCase();
 				user.setRole(Role.valueOf(role));
 				String status = resultSet.getString(6).toUpperCase();
@@ -98,6 +134,8 @@ public class MySQLUserDAOImpl implements UserDAO {
 				user.setRating(resultSet.getDouble(7));
 				Date regDate = resultSet.getDate(8);
 				user.setRegistrationDate(new Date(regDate.getTime()));
+				Map<Movie, Integer> marks = getUserMarks(userID);
+				user.setMarks(marks);
 			}
 		} catch (InterruptedException e) {
 			throw new DAOException(e);
@@ -130,17 +168,17 @@ public class MySQLUserDAOImpl implements UserDAO {
 		Connection connection = null;
 		PreparedStatement statement= null;
 		ResultSet resultSet = null;
-		User user = null;
+		User user = new User();
 		try {
 			connection = ConnectionPool.getInstance().takeConnection();
 			statement = connection.prepareStatement(SELECT_USER_BY_EMAIL);
 			statement.setString(1, email);
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
-				user = new User();
+				int userID = resultSet.getInt(1);
 				user.setLogin(resultSet.getString(2));
-				user.setPassword(EMPTY_STRING);
-				user.setEmail(resultSet.getString(3));
+				user.setPassword(resultSet.getString(3));
+				user.setEmail(resultSet.getString(4));
 				String role = resultSet.getString(5).toUpperCase();
 				user.setRole(Role.valueOf(role));
 				String status = resultSet.getString(6).toUpperCase();
@@ -148,6 +186,8 @@ public class MySQLUserDAOImpl implements UserDAO {
 				user.setRating(resultSet.getDouble(7));
 				Date regDate = resultSet.getDate(8);
 				user.setRegistrationDate(new Date(regDate.getTime()));
+				Map<Movie, Integer> marks = getUserMarks(userID);
+				user.setMarks(marks);
 			}
 		} catch (InterruptedException e) {
 			throw new DAOException(e);
@@ -175,35 +215,22 @@ public class MySQLUserDAOImpl implements UserDAO {
 		return user;
 	}
 	
-	
-	
-	@Override
-	public User checkUserWithLogin(User user) throws DAOException {
+	private Map<Movie, Integer> getUserMarks(int id) throws DAOException {
 		Connection connection = null;
 		PreparedStatement statement= null;
 		ResultSet resultSet = null;
-		User userFromDB = null;
+		Map<Movie, Integer> marks = new HashMap<Movie, Integer>();
 		try {
 			connection = ConnectionPool.getInstance().takeConnection();
-			statement = connection.prepareStatement(SELECT_USER_BY_LOGIN);
-			statement.setString(1, user.getLogin());
+			statement = connection.prepareStatement(GET_USER_MARKS);
+			statement.setInt(1, id);
 			resultSet = statement.executeQuery();
+			DAOAbstractFactory factory = MySQLDAOFactory.getInstance();
+			MovieDAO movieDAO = factory.getMovieDAO();
 			while (resultSet.next()) {
-				String savedPassword = resultSet.getString(3);
-				if (!savedPassword.equals(DigestUtils.md5Hex(user.getPassword()))) {
-					return userFromDB;
-				}
-				userFromDB = new User();
-				userFromDB.setLogin(resultSet.getString(2));
-				userFromDB.setPassword(EMPTY_STRING);
-				userFromDB.setEmail(resultSet.getString(3));
-				String role = resultSet.getString(5).toUpperCase();
-				userFromDB.setRole(Role.valueOf(role));
-				String status = resultSet.getString(6).toUpperCase();
-				userFromDB.setStatus(Status.valueOf(status));
-				userFromDB.setRating(resultSet.getDouble(7));
-				Date regDate = resultSet.getDate(8);
-				userFromDB.setRegistrationDate(new Date(regDate.getTime()));
+				Movie movie = movieDAO.readMovieById(resultSet.getInt(2));
+				Integer mark = resultSet.getInt(3);
+				marks.put(movie, mark);
 			}
 		} catch (InterruptedException e) {
 			throw new DAOException(e);
@@ -228,71 +255,57 @@ public class MySQLUserDAOImpl implements UserDAO {
 				ConnectionPool.getInstance().releaseConnection(connection);
 			}
 		}
-		return userFromDB;
+		
+		return marks;
+	}
+	
+	@Override
+	public User checkUserWithLogin(User user) throws DAOException{
+		String login = user.getLogin();
+		String userPassword = user.getPassword();
+		User userFromDB = readUserByLogin(login);
+		if (userFromDB.getLogin() == null) {
+			return new User();
+		}
+		String userDBPassword = userFromDB.getPassword();
+		if (!checkPassword(userPassword, userDBPassword)) {
+			return new User();
+		} else {
+			return userFromDB;
+		}
 	}
 
 
 	@Override
 	public User checkUserWithEmail(User user) throws DAOException {
-		Connection connection = null;
-		PreparedStatement statement= null;
-		ResultSet resultSet = null;
-		User userFromDB = null;
-		try {
-			connection = ConnectionPool.getInstance().takeConnection();
-			statement = connection.prepareStatement(SELECT_USER_BY_EMAIL);
-			statement.setString(1, user.getEmail());
-			resultSet = statement.executeQuery();
-			while (resultSet.next()) {
-				String savedPassword = resultSet.getString(3);
-				if (!savedPassword.equals(DigestUtils.md5Hex(user.getPassword()))) {
-					return userFromDB;
-				}
-				userFromDB = new User();
-				userFromDB.setLogin(resultSet.getString(2));
-				userFromDB.setPassword(EMPTY_STRING);
-				userFromDB.setEmail(resultSet.getString(3));
-				String role = resultSet.getString(5).toUpperCase();
-				userFromDB.setRole(Role.valueOf(role));
-				String status = resultSet.getString(6).toUpperCase();
-				userFromDB.setStatus(Status.valueOf(status));
-				userFromDB.setRating(resultSet.getDouble(7));
-				Date regDate = resultSet.getDate(8);
-				userFromDB.setRegistrationDate(new Date(regDate.getTime()));
-			}
-		} catch (InterruptedException e) {
-			throw new DAOException(e);
-		} catch (SQLException e) {
-			throw new DAOException(e);
-		} finally {
-			if(resultSet != null) {
-				try {
-					resultSet.close();
-				} catch (SQLException e) {
-					throw new DAOException(e);
-				}
-			}
-			if (statement != null) {
-				try {
-					statement.close();
-				} catch (SQLException e) {
-					throw new DAOException(e);
-				}
-			}
-			if(connection != null) {
-				ConnectionPool.getInstance().releaseConnection(connection);
-			}
+		String email = user.getEmail();
+		String userPassword = user.getPassword();
+		User userFromDB = readUserByEmail(email);
+		if (userFromDB.getLogin() == null) {
+			return new User();
 		}
-		return userFromDB;
+		String userDBPassword = userFromDB.getPassword();
+		if (!checkPassword(userPassword, userDBPassword)) {
+			return new User();
+		} else {
+			return userFromDB;
+		}
 	}
-
+	
+	private static boolean checkPassword(String password, String passwordDB) {
+		if (password.equals(DigestUtils.md5Hex(passwordDB))) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	@Override
 	public boolean updateUserPassword(User user, String newPassword) throws DAOException {
-		if (checkUserWithLogin(user) == null ) {
+		if (checkUserWithLogin(user).getLogin() == null ) {
 			return false;
 		}
-		if (checkUserWithEmail(user) == null) {
+		if (checkUserWithEmail(user).getLogin() == null) {
 			return false;
 		}
 		Connection connection = null;
@@ -467,7 +480,205 @@ public class MySQLUserDAOImpl implements UserDAO {
 		}
 	}
 
+	
 
+	@Override
+	public boolean updateUserMarkToMovie(User user, Movie movie, int newMark) throws DAOException {
+		DAOAbstractFactory factory =  MySQLDAOFactory.getInstance();
+		MovieDAO movieDAO = factory.getMovieDAO();
+		if (newMark != 0) {
+			if(!isExistedMark(user, movie)) {
+				if (addUserMarkToMovie(user, movie, newMark)) {
+					movieDAO.updateMovieMark(movie, newMark, 1);
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				int oldMark = changeUserMark(user, movie, newMark);
+				if (oldMark > 0) {
+					newMark -= oldMark;
+					movieDAO.updateMovieMark(movie, newMark, 0);
+					return true;
+				} else {
+					return false;
+				}
+			}
+		} else {
+			if (removeUserMark(user, movie)) {
+				movieDAO.updateMovieMark(movie, newMark, -1);
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+	
+	private boolean isExistedMark(User user, Movie movie) throws DAOException {
+		Connection connection = null;
+		PreparedStatement statement= null;
+		ResultSet resultSet = null;
+		try {
+			connection = ConnectionPool.getInstance().takeConnection();
+			statement = connection.prepareStatement(SELECT_USER_MARK_TO_MOVIE_QUERy);
+			statement.setString(1, user.getLogin());
+			statement.setString(2, movie.getTitle());
+			statement.setString(3, movie.getDirector());
+			resultSet = statement.executeQuery();
+			if (resultSet.next()) {
+				return true;
+			}
+		} catch (InterruptedException e) {
+			throw new DAOException(e);
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (SQLException e) {
+					throw new DAOException(e);
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					throw new DAOException(e);
+				}
+			}
+			if(connection != null) {
+				ConnectionPool.getInstance().releaseConnection(connection);
+			}
+		}
+		return false;
+	}
+	
+	private boolean addUserMarkToMovie(User user, Movie movie, int newMark) throws DAOException {
+		Connection connection = null;
+		PreparedStatement statement= null;
+		int rowCount = 0;
+		try {
+			connection = ConnectionPool.getInstance().takeConnection();
+			statement = connection.prepareStatement(ADD_USER_MARK_TO_MOVIE_QUERY);
+			statement.setString(1, user.getLogin());
+			statement.setString(2, movie.getTitle());
+			statement.setString(3, movie.getDirector());
+			statement.setInt(4, newMark);
+			rowCount = statement.executeUpdate();
+			if (rowCount > 0) {
+				return true;
+			}
+		} catch (InterruptedException e) {
+			throw new DAOException(e);
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					throw new DAOException(e);
+				}
+			}
+			if(connection != null) {
+				ConnectionPool.getInstance().releaseConnection(connection);
+			}
+		}
+		return false;
+	}
+	
+	private boolean removeUserMark(User user, Movie movie) throws DAOException {
+		Connection connection = null;
+		PreparedStatement statement= null;
+		int rowCount = 0;
+		try {
+			connection = ConnectionPool.getInstance().takeConnection();
+			statement = connection.prepareStatement(DELETE_USER_MARK_QUERY);
+			statement.setString(1, user.getLogin());
+			statement.setString(2, movie.getTitle());
+			statement.setString(3, movie.getDirector());
+			rowCount = statement.executeUpdate();
+			if (rowCount > 0) {
+				return true;
+			}
+		} catch (InterruptedException e) {
+			throw new DAOException(e);
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					throw new DAOException(e);
+				}
+			}
+			if(connection != null) {
+				ConnectionPool.getInstance().releaseConnection(connection);
+			}
+		}
+		return false;
+	}
+	
+	private int changeUserMark(User user, Movie movie, int newMark) throws DAOException {
+		Connection connection = null;
+		PreparedStatement selectStatement= null;
+		PreparedStatement insertStatement= null;
+		ResultSet resultSet = null;
+		int oldMark = 0;
+		try {
+			connection = ConnectionPool.getInstance().takeConnection();
+			selectStatement = connection.prepareStatement(SELECT_OLD_USER_MARK_QUERY);
+			selectStatement.setString(1, user.getLogin());
+			selectStatement.setString(2, movie.getTitle());
+			selectStatement.setString(3, movie.getDirector());
+			resultSet = selectStatement.executeQuery();
+			int movieID = 0;
+			while (resultSet.next()) {
+				movieID = resultSet.getInt(2);
+				oldMark = resultSet.getInt(3);
+			}
+			insertStatement = connection.prepareStatement(UPDATE_USER_MARK_QUERY);
+			insertStatement.setInt(1, newMark);
+			insertStatement.setInt(2, movieID);
+			int rowCount = insertStatement.executeUpdate();
+			if (rowCount == 0) {
+				return 0;
+			}
+		} catch (InterruptedException e) {
+			throw new DAOException(e);
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (SQLException e) {
+					throw new DAOException(e);
+				}
+			}
+			if (selectStatement != null) {
+				try {
+					selectStatement.close();
+				} catch (SQLException e) {
+					throw new DAOException(e);
+				}
+			}
+			if (insertStatement != null) {
+				try {
+					insertStatement.close();
+				} catch (SQLException e) {
+					throw new DAOException(e);
+				}
+			}
+			if(connection != null) {
+				ConnectionPool.getInstance().releaseConnection(connection);
+			}
+		}
+		return oldMark;
+	}
+	
 	@Override
 	public void delete(User user) throws DAOException {
 		Connection connection = null;

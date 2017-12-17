@@ -1,6 +1,7 @@
 package by.tr.web.kinorating.dao;
 
 import by.tr.web.kinorating.dao.exception.DAOException;
+import by.tr.web.kinorating.domain.Movie;
 import by.tr.web.kinorating.domain.Role;
 import by.tr.web.kinorating.domain.Status;
 import by.tr.web.kinorating.domain.User;
@@ -26,6 +27,8 @@ public interface UserDAO {
 	boolean updateUserStatus(User user, Status newStatus) throws DAOException;
 	
 	boolean updateUserRating(User user, double newRating) throws DAOException;
+	
+	boolean updateUserMarkToMovie(User user, Movie movie, int newMark) throws DAOException;
 
 	void delete(User user) throws DAOException;
 }

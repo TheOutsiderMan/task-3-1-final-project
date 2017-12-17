@@ -1,33 +1,34 @@
 package by.tr.web.kinorating.dao;
 
 import java.util.List;
-import java.util.Map;
 
 import by.tr.web.kinorating.dao.exception.DAOException;
 import by.tr.web.kinorating.domain.Movie;
 
 public interface MovieDAO {
-
-	boolean createMovie(Map<String, Movie> movie) throws DAOException;
+	
+	boolean createMovie(Movie movie, String locale) throws DAOException;
 
 	List<Movie> readAllMovies(String locale) throws DAOException;
 
-	List<Movie> readMovieByTitle(String title);
+	List<Movie> readMovieByTitle(String title) throws DAOException;
+	
+	Movie readMovieById(int id) throws DAOException;
 
 	List<Movie> readRandomMovies(int amount, String locale) throws DAOException;
 
-	void updateMovieTitle(Movie movie, String title);
+	boolean updateMovieTitle(Movie movie, String newTitle) throws DAOException;
 
-	void updateMovieLength(Movie movie, int length);
+	boolean updateMovieLength(Movie movie, int newLength) throws DAOException;
 
-	void updateMovieyear(Movie movie, int year);
+	boolean updateMovieyear(Movie movie, int newYear) throws DAOException;
 
-	void updateMovieDirector(Movie movie, String director);
+	boolean updateMovieDirector(Movie movie, String newDirector) throws DAOException;
 
-	void updateMovieGenre(Movie movie, String genre);
+	boolean updateMovieGenre(Movie movie, String newGenre) throws DAOException;
 
-	void updateMovieMark(Movie movie, double mark);
+	boolean updateMovieMark(Movie movie, int newMark, int amountDifference) throws DAOException;
 
-	void deleteMovie(Movie movie);
+	boolean deleteMovie(Movie movie) throws DAOException;
 
 }

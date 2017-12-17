@@ -30,13 +30,14 @@ public class UserServiceImpl implements UserService {
 			} catch (DAOException e) {
 				throw new ServiceException(e);
 			}
-			if (existedUser.getStatus().equals(Status.BANNED)) {
-				return null;
+			Status status = existedUser.getStatus();
+			if (status == null || status.equals(Status.BANNED)) {
+				return new User();
 			} else {
 				return existedUser;
 			}
 		} else {
-			return null;
+			return new User();
 		}
 	}
 
@@ -55,13 +56,14 @@ public class UserServiceImpl implements UserService {
 			} catch (DAOException e) {
 				throw new ServiceException(e);
 			}
-			if (existedUser.getStatus().equals(Status.BANNED)) {
-				return null;
+			Status status = existedUser.getStatus();
+			if (status == null || status.equals(Status.BANNED)) {
+				return new User();
 			} else {
 				return existedUser;
 			}
 		} else {
-			return null;
+			return new User();
 		}
 	}
 
