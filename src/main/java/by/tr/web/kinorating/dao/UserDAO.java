@@ -30,5 +30,5 @@ public interface UserDAO {
 	
 	boolean updateUserMarkToMovie(User user, Movie movie, int newMark) throws DAOException;
 
-	void delete(User user) throws DAOException;
+	boolean delete(User user) throws DAOException;
 }

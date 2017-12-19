@@ -55,21 +55,17 @@ public class AuthenticationImpl implements Command{
 				return;
 			}
 		}
-		boolean rememberInput = false;
-		if (rememberUser != null) {
-			rememberInput = true;
-		}
 		HttpSession session =  request.getSession(true);
-		if (!authenticatedUser.getLogin().isEmpty()) {
+		if (authenticatedUser.getLogin() != null) {
 			session.setAttribute(AUTHENTICATED, AUTHENTICATED_TRUE);
-			if (rememberInput) {
+			if (rememberUser != null) {
 				session.setMaxInactiveInterval(0);
 			}
 			session.setAttribute(ATTR_USER, authenticatedUser);
 		} else {
 			session.setAttribute(AUTHENTICATED, AUTHENTICATED_FALSE);
 		}
-		request.getRequestDispatcher(forwardURL).forward(request, response);;
+		request.getRequestDispatcher(forwardURL).forward(request, response);
 	}
 
 }

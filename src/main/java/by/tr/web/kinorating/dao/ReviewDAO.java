@@ -2,21 +2,24 @@ package by.tr.web.kinorating.dao;
 
 import java.util.List;
 
+import by.tr.web.kinorating.dao.exception.DAOException;
 import by.tr.web.kinorating.domain.Movie;
 import by.tr.web.kinorating.domain.Review;
 import by.tr.web.kinorating.domain.User;
 
 public interface ReviewDAO {
 
-	void createReview(Review review);
+	boolean createReview(Review review) throws DAOException;
 
-	Review readReview(User user, Movie movie);
+	Review readReview(User user, Movie movie) throws DAOException;
 
-	List<Review> readReviewsByUser(User user);
+	List<Review> readReviewsByUser(User user) throws DAOException;
 
-	List<Review> readMovieReviews(Movie movie);
+	List<Review> readMovieReviews(Movie movie) throws DAOException;
 	
-	List<Review> readAllReviews();
+	List<Review> readAllReviews() throws DAOException;
+	
+	boolean updateReview(Review review, String newText) throws DAOException;
 
-	void deleteReview(Review review);
+	boolean deleteReview(Review review) throws DAOException;
 }

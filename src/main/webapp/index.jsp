@@ -182,7 +182,7 @@
 					      <td><c:out value="${movie.genre}"></c:out></td>
 					      <td><c:out value="${movie.year}"></c:out></td>
 					      <td><c:out value="${movie.length}"></c:out></td>
-					      <td><c:out value="${movie.mark}"></c:out></td>
+					      <td><c:out value="${movie.rating}"></c:out></td>
 					    </tr>
 					    </c:forEach>
 					  </tbody>

@@ -4,35 +4,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-<fmt:setLocale value="${cookie.locale.value}" />
-<fmt:setBundle basename="localization.locale" var="locale"/>
-<fmt:message bundle="${locale}" key="locale.navbar.link.main.page" var="navbar_link_main_page"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.navbar.link.movies" var="navbar_link_movies"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.navbar.link.reviews" var="navbar_link_reviews"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.navbar.link.search" var="navbar_link_search"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.navbar.link.log.in" var="navbar_link_log_in"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.page.title" var="locale_page_title"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.page.title.registration" var="locale_page_title_registration"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.log.in.form.input.email.name" var="log_in_form_input_email_name"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.log.in.form.input.password" var="log_in_form_input_password"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.log.in.form.label.email.name" var="log_in_form_label_email_name"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.log.in.form.label.password" var="log_in_form_label_password"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.log.in.link.forgot.password" var="log_in_link_forgot_password"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.log.in.link.sign.up" var="log_in_link_sign_up"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.log.in.link.remember" var="log_in_link_remember"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.log.in.button.log.in" var="log_in_button_log_in"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.footer.text" var="footer_text"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.reg.after.button" var="locale_reg_after_button"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.reg.after.message.not.ok" var="message_not_ok"></fmt:message>
-<fmt:message bundle="${locale}" key="locale.reg.after.message.ok" var="message_ok"></fmt:message>
-
-
-<title>${locale_page_title_registration}</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-<link rel="stylesheet" href="css/task.css">
+	
+	<fmt:setLocale value="${cookie.locale.value}" />
+	<fmt:setBundle basename="localization.locale" var="locale"/>
+	<fmt:message bundle="${locale}" key="locale.navbar.link.main.page" var="navbar_link_main_page"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.navbar.link.movies" var="navbar_link_movies"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.navbar.link.reviews" var="navbar_link_reviews"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.navbar.link.search" var="navbar_link_search"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.navbar.link.log.in" var="navbar_link_log_in"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.page.title" var="locale_page_title"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.page.title.registration" var="locale_page_title_registration"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.log.in.form.input.email.name" var="log_in_form_input_email_name"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.log.in.form.input.password" var="log_in_form_input_password"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.log.in.form.label.email.name" var="log_in_form_label_email_name"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.log.in.form.label.password" var="log_in_form_label_password"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.log.in.link.forgot.password" var="log_in_link_forgot_password"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.log.in.link.sign.up" var="log_in_link_sign_up"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.log.in.link.remember" var="log_in_link_remember"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.log.in.button.log.in" var="log_in_button_log_in"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.footer.text" var="footer_text"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.reg.after.button" var="locale_reg_after_button"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.reg.after.message.not.ok" var="message_not_ok"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.reg.after.message.ok" var="message_ok"></fmt:message>
+	
+	
+	<title>${locale_page_title_registration}</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/task.css">
 </head>
 
 <body>

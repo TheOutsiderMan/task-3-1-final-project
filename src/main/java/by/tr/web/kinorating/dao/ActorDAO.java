@@ -18,11 +18,11 @@ public interface ActorDAO {
 
 	boolean updateActorName(Actor actor, String firstName, String secondName) throws DAOException;
 	
-	boolean updateActorFirstName(Actor actor, String firstName);
+	boolean updateActorFirstName(Actor actor, String firstName) throws DAOException;
 	
-	boolean updateActorSecondName(Actor actor, String secondName);
+	boolean updateActorSecondName(Actor actor, String secondName) throws DAOException;
 
-	boolean updateActorAge(Actor actor, int age);
+	boolean updateActorAge(Actor actor, int age) throws DAOException;
 	
-	boolean deleteActor(Actor actor);
+	boolean deleteActor(Actor actor) throws DAOException;
 }

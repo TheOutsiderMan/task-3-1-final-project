@@ -135,7 +135,7 @@
 	</header>
 	<main class="container-fluid">
 	<div class="row">
-		<div class="col-3">Sidebar</div>
+		<div class="col-3"></div>
 		<div class="col-6">
 			<form method="post" action="app">
 				<div class="form-group">
@@ -167,7 +167,7 @@
 				
 			</form>
 		</div>
-		<div class="col-3">Sidebar</div>
+		<div class="col-3"></div>
 	</div>
 	</main>
 	<footer class="footer">

@@ -67,6 +67,9 @@ public class MySQLUserDAOImpl implements UserDAO {
 			Date date = new Date(user.getRegistrationDate().getTime());
 			preparedStatement.setDate(7, date);
 			rowCount = preparedStatement.executeUpdate();
+			if (rowCount != 0) {
+				return true;
+			}
 		} catch (InterruptedException e) {
 			throw new DAOException(e);
 		} catch (SQLException e) {
@@ -83,11 +86,7 @@ public class MySQLUserDAOImpl implements UserDAO {
 				ConnectionPool.getInstance().releaseConnection(connection);
 			}
 		}
-		if (rowCount > 0 ) {
-			return true;
-		} else {
-			return false;
-		}
+		return false;
 	}
 	
 	private boolean isExistedUser(String string) throws DAOException {
@@ -255,7 +254,6 @@ public class MySQLUserDAOImpl implements UserDAO {
 				ConnectionPool.getInstance().releaseConnection(connection);
 			}
 		}
-		
 		return marks;
 	}
 	
@@ -270,9 +268,8 @@ public class MySQLUserDAOImpl implements UserDAO {
 		String userDBPassword = userFromDB.getPassword();
 		if (!checkPassword(userPassword, userDBPassword)) {
 			return new User();
-		} else {
-			return userFromDB;
-		}
+		} 
+		return userFromDB;
 	}
 
 
@@ -287,17 +284,15 @@ public class MySQLUserDAOImpl implements UserDAO {
 		String userDBPassword = userFromDB.getPassword();
 		if (!checkPassword(userPassword, userDBPassword)) {
 			return new User();
-		} else {
-			return userFromDB;
 		}
+		return userFromDB;
 	}
 	
 	private static boolean checkPassword(String password, String passwordDB) {
 		if (password.equals(DigestUtils.md5Hex(passwordDB))) {
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	@Override
@@ -318,6 +313,10 @@ public class MySQLUserDAOImpl implements UserDAO {
 			statement.setString(1, password);
 			statement.setString(2, user.getLogin());
 			rowCount = statement.executeUpdate();
+			if (rowCount != 0) {
+				return true;
+			}
+
 		} catch (InterruptedException e) {
 			throw new DAOException(e);
 		} catch (SQLException e) {
@@ -334,11 +333,7 @@ public class MySQLUserDAOImpl implements UserDAO {
 				ConnectionPool.getInstance().releaseConnection(connection);
 			}
 		}
-		if (rowCount > 0) {
-			return true;
-		} else {
-			return false;
-		}
+		return false;
 	}
 
 	@Override
@@ -352,6 +347,9 @@ public class MySQLUserDAOImpl implements UserDAO {
 			statement.setString(1, newEmail);
 			statement.setString(2, user.getLogin());
 			rowCount = statement.executeUpdate();
+			if (rowCount != 0) {
+				return true;
+			}
 		} catch (InterruptedException e) {
 			throw new DAOException(e);
 		} catch (SQLException e) {
@@ -368,11 +366,7 @@ public class MySQLUserDAOImpl implements UserDAO {
 				ConnectionPool.getInstance().releaseConnection(connection);
 			}
 		}
-		if (rowCount > 0) {
-			return true;
-		} else {
-			return false;
-		}
+		return false;
 	}
 
 
@@ -387,6 +381,10 @@ public class MySQLUserDAOImpl implements UserDAO {
 			statement.setString(1, newRole.toString());
 			statement.setString(2, user.getLogin());
 			rowCount = statement.executeUpdate();
+			if (rowCount != 0) {
+				return true;
+			}
+
 		} catch (InterruptedException e) {
 			throw new DAOException(e);
 		} catch (SQLException e) {
@@ -403,11 +401,7 @@ public class MySQLUserDAOImpl implements UserDAO {
 				ConnectionPool.getInstance().releaseConnection(connection);
 			}
 		}
-		if (rowCount > 0) {
-			return true;
-		} else {
-			return false;
-		}
+		return false;
 	}
 
 
@@ -422,6 +416,9 @@ public class MySQLUserDAOImpl implements UserDAO {
 			statement.setString(1, newStatus.toString());
 			statement.setString(2, user.getLogin());
 			rowCount = statement.executeUpdate();
+			if (rowCount != 0) {
+				return true;
+			}
 		} catch (InterruptedException e) {
 			throw new DAOException(e);
 		} catch (SQLException e) {
@@ -438,11 +435,7 @@ public class MySQLUserDAOImpl implements UserDAO {
 				ConnectionPool.getInstance().releaseConnection(connection);
 			}
 		}
-		if (rowCount > 0) {
-			return true;
-		} else {
-			return false;
-		}
+		return false;
 	}
 
 
@@ -491,28 +484,24 @@ public class MySQLUserDAOImpl implements UserDAO {
 				if (addUserMarkToMovie(user, movie, newMark)) {
 					movieDAO.updateMovieMark(movie, newMark, 1);
 					return true;
-				} else {
-					return false;
-				}
-			} else {
-				int oldMark = changeUserMark(user, movie, newMark);
-				if (oldMark > 0) {
-					newMark -= oldMark;
-					movieDAO.updateMovieMark(movie, newMark, 0);
-					return true;
-				} else {
-					return false;
-				}
-			}
-		} else {
-			if (removeUserMark(user, movie)) {
-				movieDAO.updateMovieMark(movie, newMark, -1);
-				return true;
-			} else {
+				} 
 				return false;
-			}
+			} 
+			int oldMark = changeUserMark(user, movie, newMark);
+			if (oldMark > 0) {
+				newMark -= oldMark;
+				movieDAO.updateMovieMark(movie, newMark, 0);
+				return true;
+			} 
+			return false;
 		}
+		if (removeUserMark(user, movie)) {
+			movieDAO.updateMovieMark(movie, newMark, -1);
+			return true;
+		}
+		return false;
 	}
+	
 	
 	private boolean isExistedMark(User user, Movie movie) throws DAOException {
 		Connection connection = null;
@@ -680,27 +669,27 @@ public class MySQLUserDAOImpl implements UserDAO {
 	}
 	
 	@Override
-	public void delete(User user) throws DAOException {
+	public boolean delete(User user) throws DAOException {
 		Connection connection = null;
 		PreparedStatement statement= null;
+		int rowCount = 0;
 		try {
 			connection = ConnectionPool.getInstance().takeConnection();
 			statement = connection.prepareStatement(DELETE_USER_QUERY);
-			String login = null;
-			if (user.getLogin() != null) {
-				login = user.getLogin();
-			} else {
+			String login = user.getLogin();;
+			if (user.getLogin() == null) {
 				login = EMPTY_STRING;
 			}
-			String email = null;
-			if (user.getEmail() != null) {
-				email = user.getEmail();
-			} else {
+			String email = user.getEmail();;
+			if (user.getEmail() == null) {
 				email = EMPTY_STRING;
-			}
+			} 
 			statement.setString(1, login);
 			statement.setString(2, email);
-			statement.executeUpdate();
+			rowCount = statement.executeUpdate();
+			if (rowCount != 0) {
+				return true;
+			}
 		} catch (InterruptedException e) {
 			throw new DAOException(e);
 		} catch (SQLException e) {
@@ -717,6 +706,7 @@ public class MySQLUserDAOImpl implements UserDAO {
 				ConnectionPool.getInstance().releaseConnection(connection);
 			}
 		}
+		return false;
 	}
 
 }
