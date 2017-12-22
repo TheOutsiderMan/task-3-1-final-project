@@ -21,13 +21,14 @@ public class MovieServiceImpl implements MovieService {
 		}
 		DAOAbstractFactory factory = MySQLDAOFactory.getInstance();
 		MovieDAO movieDAO = factory.getMovieDAO();
+		
 		boolean added = false;
 		try {
 			added = movieDAO.createMovie(movie, langName);
 		} catch (DAOException e) {
 			throw new ServiceException(e);
 		}
-		return false;
+		return added;
 	}
 	
 	@Override

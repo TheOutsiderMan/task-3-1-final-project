@@ -50,8 +50,9 @@ public class MySQLMovieDAOImpl implements MovieDAO{
 			statement = connection.prepareStatement(CREATE_MOVIE_QUERY);
 			statement.setInt(1, movie.getYear());
 			statement.setInt(2, movie.getLength());
+			statement.setDouble(3, movie.getRating());
 			Date date = new Date(movie.getAdditionDate().getTime());
-			statement.setDate(3, date);
+			statement.setDate(4, date);
 			rowCount = statement.executeUpdate();
 			if (rowCount == 0) {
 				return false;
@@ -78,6 +79,7 @@ public class MySQLMovieDAOImpl implements MovieDAO{
 		} catch (InterruptedException e) {
 			throw new DAOException(e);
 		} catch (SQLException e) {
+			System.err.println(e);
 			throw new DAOException(e);
 		} finally {
 			if (resultSet != null) {

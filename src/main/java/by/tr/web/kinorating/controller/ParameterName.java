@@ -14,4 +14,9 @@ public final class ParameterName {
 	public static final String ACTION = "action";
 	public static final String AGREEMENT = "agreement";
 	public static final String PAGE = "page";	
+	public static final String LENGTH = "length";
+	public static final String YEAR = "year";
+	public static final String GENRE = "genre";
+	public static final String DIRECTOR = "director";
+	public static final String TITLE = "title";
 }

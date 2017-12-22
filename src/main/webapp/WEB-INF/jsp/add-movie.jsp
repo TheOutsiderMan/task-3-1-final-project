@@ -29,8 +29,8 @@
 	<title>${locale_page_title}</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/task.css">
+	<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../css/task.css">
 </head>
 
 <body>
@@ -155,7 +155,37 @@
 	<div class="row">
 		<div class="col-2"></div>
 		<div class="col-8">
-		
+			<form action="../app" method="post">
+				<div class="form-group">
+					<label class="col-form-label" for="movie-title">Название фильма:</label>
+					<input type="text" class="form-control"	name="title" id="movie-title" placeholder="Введите название фильма">
+				</div>
+				<div class="form-group">
+					<label class="col-form-label" for="movie-director">Режиссер фильма:</label>
+					<input type="text" class="form-control" name="director"	id="movie-director" placeholder="Введите режиссера фильма" title="Если режиссеров несколько, вводите через запятую">
+				</div>
+				<div class="form-group">
+					<label class="col-form-label" for="movie-genre">Жанр фильма:</label>
+					<input type="text" class="form-control"	name="genre" id="movie-genre" placeholder="Введите жанр фильма" title="Если жанров несколько, вводите через запятую">
+				</div>
+				<div class="form-group">
+					<label class="col-form-label" for="movie-year">Год выпуска фильма:</label>
+					<input type="number" class="form-control" name="year"	id="movie-year" placeholder="Введите год выпуска фильма">
+				</div>
+				<div class="form-group">
+					<label class="col-form-label" for="movie-length">Длительность фильма, в мин:</label>
+					<input type="number" class="form-control" name="length" id="movie-length" placeholder="Введите длительность фильма в минутах">
+				</div>
+				<div class="form-group row">
+					<label class="col-form-label" for="movie-locale">Выберите язык, на котором вы вводили информацию</label>
+					<select class="col-form-label" id="movie-locale" name="locale" size="1">
+						<option value="en">EN</option>
+						<option value="ru">RU</option>
+					</select>
+				</div>
+				<input class="btn btn-primary" type="submit" >
+				<input name="action" value="add_movie" hidden="">
+			</form>
 		</div>
 		<div class="col-2"></div>
 	</div>
@@ -168,7 +198,7 @@
 		</div>
 	</footer>
 
-	<script src="js/jquery-3.2.1.min.js"></script>
-	<script src="bootstrap/js/bootstrap.bundle.js"></script>
+	<script src="../js/jquery-3.2.1.min.js"></script>
+	<script src="../bootstrap/js/bootstrap.bundle.js"></script>
 </body>
 </html>

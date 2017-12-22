@@ -34,6 +34,14 @@
     <servlet-name>MoviesPage</servlet-name>
     <url-pattern>/movies</url-pattern>
   </servlet-mapping>
+  <servlet>
+  	<servlet-name>AddMoviePage</servlet-name>
+  	<jsp-file>/WEB-INF/jsp/add-movie.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>AddMoviePage</servlet-name>
+  	<url-pattern>/movies/add-movie</url-pattern>
+  </servlet-mapping>
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>

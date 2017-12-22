@@ -25,4 +25,8 @@
 		<name>init_view</name>
 		<class>by.tr.web.kinorating.controller.command.impl.PageViewInitialzeImpl</class>
 	</command>
+	<command>
+		<name>add_movie</name>
+		<class>by.tr.web.kinorating.controller.command.impl.AddMovieImpl</class>
+	</command>
 </commands>

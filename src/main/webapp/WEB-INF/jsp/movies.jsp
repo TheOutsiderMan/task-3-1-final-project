@@ -60,6 +60,15 @@
 							<c:out value="${navbar_link_reviews}" />
 						</a>
 					</li>
+					<c:choose>
+						<c:when test="${sessionScope.user.role.toString() == 'ADMIN' }">
+							<li class="nav-item">
+								<a class="nav-link" href="#">
+									<c:out value="${navbar_link_users}" />
+								</a>
+							</li>
+						</c:when>
+					</c:choose>
 				</ul>
 				<form class="form-inline my-2 my-lg-0" method="get"	action="app">
 					<input class="form-control mr-sm-2" type="search" aria-label="Search" name="searchText">
@@ -74,7 +83,8 @@
 							<c:when test="${sessionScope.authenticated != 'yes' }">
 								<a class="nav-link dropdown-toggle" href="#" id="logIn"
 									role="button" data-toggle="dropdown" aria-haspopup="true"
-									aria-expanded="false"><c:out value="${navbar_link_log_in}" />
+									aria-expanded="false">
+									<c:out value="${navbar_link_log_in}" />
 								</a>
 								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="logIn">
 									<form class="dropdown-item" method="post" action="app">
@@ -88,7 +98,7 @@
 											<label for="password">
 												<c:out value="${log_in_form_label_password}" />
 											</label>
-											<input type="password" class="form-control" name="password"	placeholder="<c:out value="${log_in_form_label_password}"/>">
+											<input type="password" class="form-control" name="password" placeholder="<c:out value="${log_in_form_label_password}"/>">
 										</div>
 										<div class="form-check">
 											<label class="form-check-label">
@@ -131,7 +141,7 @@
 					</li>
 					<form class="nav-item" method="post" action="app">
 						<input type="hidden" name="action" value="change_language">
-						<div class="btn-group-vertical">
+							<div class="btn-group-vertical">
 							<button class="btn btn-dark btn-sm py-0 languages" name="locale" type="submit" value="en_US">EN</button>
 							<button class="btn btn-dark btn-sm py-0 languages" name="locale" type="submit" value="ru">RU</button>
 							<input type="hidden" name="url"	value="${pageContext.request.requestURI}">
@@ -194,7 +204,11 @@
 			</c:otherwise>
 		</c:choose>	
 		</div>
-		<div class="col-2"></div>
+		<div class="col-2">
+		<c:if test="${sessionScope.user.role.toString() == 'ADMIN' }">
+			<a href="movies/add-movie" class="btn btn-secondary" role="button">добавить фильм</a>
+		</c:if>
+		</div>
 	</div>
 	</main>
 	<footer class="footer">
@@ -204,7 +218,6 @@
 			</p>
 		</div>
 	</footer>
-
 	<script src="js/jquery-3.2.1.min.js"></script>
 	<script src="bootstrap/js/bootstrap.bundle.js"></script>
 </body>

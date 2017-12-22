@@ -21,5 +21,4 @@ public class CommandProvider {
 		}
 		return commands.get(name);
 	}
-	
 }

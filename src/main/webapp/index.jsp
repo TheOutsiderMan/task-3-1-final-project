@@ -9,6 +9,7 @@
 	<fmt:setBundle basename="localization.locale" var="locale" />
 	<fmt:message bundle="${locale}" key="locale.navbar.link.main.page" var="navbar_link_main_page" ></fmt:message>
 	<fmt:message bundle="${locale}" key="locale.navbar.link.movies"	var="navbar_link_movies"></fmt:message>
+	<fmt:message bundle="${locale}" key="locale.navbar.link.users"	var="navbar_link_users"></fmt:message>
 	<fmt:message bundle="${locale}" key="locale.navbar.link.reviews" var="navbar_link_reviews"></fmt:message>
 	<fmt:message bundle="${locale}" key="locale.navbar.link.search"	var="navbar_link_search"></fmt:message>
 	<fmt:message bundle="${locale}" key="locale.navbar.link.log.in"	var="navbar_link_log_in"></fmt:message>
@@ -59,6 +60,15 @@
 							<c:out value="${navbar_link_reviews}" />
 						</a>
 					</li>
+					<c:choose>
+						<c:when test="${sessionScope.user.role.toString() == 'ADMIN' }">
+							<li class="nav-item">
+								<a class="nav-link" href="#">
+									<c:out value="${navbar_link_users}" />
+								</a>
+							</li>
+						</c:when>
+					</c:choose>
 				</ul>
 				<form class="form-inline my-2 my-lg-0" method="get"	action="app">
 					<input class="form-control mr-sm-2" type="search" aria-label="Search" name="searchText">

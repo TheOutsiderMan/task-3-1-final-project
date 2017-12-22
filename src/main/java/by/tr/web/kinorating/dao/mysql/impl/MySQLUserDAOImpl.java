@@ -289,7 +289,7 @@ public class MySQLUserDAOImpl implements UserDAO {
 	}
 	
 	private static boolean checkPassword(String password, String passwordDB) {
-		if (password.equals(DigestUtils.md5Hex(passwordDB))) {
+		if (DigestUtils.md5Hex(password).equals(passwordDB)) {
 			return true;
 		}
 		return false;

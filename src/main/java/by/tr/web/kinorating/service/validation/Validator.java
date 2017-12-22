@@ -17,7 +17,7 @@ public class Validator {
 	private static final int LOGIN_MIN_LENGTH = 4;
 	private static final String REGEX_PASSWORD = "[\\w^_]{6,}";
 	private static final String REGEX_EMAIL = "[a-zA-Z]+@[a-zA-Z]+\\.[a-zA-Z]+";
-	private static final String REGEX_LOGIN = "^[a-zA-Zа-яА-Я]{1}\\w{5,}$";
+	private static final String REGEX_LOGIN = "^[a-zA-Zа-яА-Я]{1}\\w{3,}$";
 
 	public static boolean validateLogin(String login) {
 		if (isEmptyOrNull(login)) {
