@@ -16,7 +16,7 @@ import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 import by.tr.web.kinorating.controller.command.Command;
 
 public class CommandInitializer {
-	
+
 	private static final String TAG_CLASS = "class";
 	private static final String TAG_NAME = "name";
 	private static final String TAG_COMMAND = "command";
@@ -25,13 +25,13 @@ public class CommandInitializer {
 	public Map<String, Command> initializeCommands() throws SAXException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		DOMParser parser = new DOMParser();
 		InputStream stream = getClass().getClassLoader().getResourceAsStream(PATH_COMMANDS_XML);
-		InputSource	inputSource = new InputSource(stream);
+		InputSource inputSource = new InputSource(stream);
 		parser.parse(inputSource);
-		
+
 		Document document = parser.getDocument();
-		Element root =  document.getDocumentElement();
+		Element root = document.getDocumentElement();
 		Map<String, Command> map = new HashMap<>();
-		
+
 		NodeList commandsList = root.getElementsByTagName(TAG_COMMAND);
 		for (int i = 0; i < commandsList.getLength(); i++) {
 			Element thisNode = (Element) commandsList.item(i);
@@ -43,8 +43,8 @@ public class CommandInitializer {
 			Command commandLoad = (Command) classLoad.newInstance();
 			map.put(command, commandLoad);
 		}
-		
+
 		return map;
 	}
-	
+
 }

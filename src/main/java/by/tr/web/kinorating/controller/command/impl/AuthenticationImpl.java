@@ -7,7 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import by.tr.web.kinorating.controller.FrontController;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import by.tr.web.kinorating.controller.ParameterName;
 import by.tr.web.kinorating.controller.command.Command;
 import by.tr.web.kinorating.domain.User;
@@ -17,6 +19,7 @@ import by.tr.web.kinorating.service.exception.ServiceException;
 
 public class AuthenticationImpl implements Command{
 	
+	private static final String PROBLEM_WITH_AUTHETICATION = "Problem with authetication";
 	private static final String ATTR_USER = "user";
 	private static final String EMAIL_TRIGGER = "@";
 	private static final String EMPTY_STRING = "";
@@ -24,10 +27,11 @@ public class AuthenticationImpl implements Command{
 	private static final String AUTHENTICATED_FALSE = "no";
 	private static final String AUTHENTICATED_TRUE = "yes";
 	private static final String AUTHENTICATED = "authenticated";
+	
+	private static final Logger logger = LogManager.getLogger(AuthenticationImpl.class);
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		request.setCharacterEncoding(FrontController.UTF_8);
 		
 		String emailOrName = request.getParameter(ParameterName.EMAIL_OR_lOGIN);
 		String password = request.getParameter(ParameterName.PASSWORD);
@@ -42,16 +46,16 @@ public class AuthenticationImpl implements Command{
 			try {
 				authenticatedUser = userService.authenticateUserByEmail(emailOrName, password);
 			} catch (ServiceException e) {
-				//log
-				response.sendError(404);
+				logger.error(PROBLEM_WITH_AUTHETICATION, e);
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				return;
 			}
 		} else {
 			try {
 				authenticatedUser = userService.authenticateUserByLogin(emailOrName, password);
 			} catch (ServiceException e) {
-				//log
-				response.sendError(404);
+				logger.error(PROBLEM_WITH_AUTHETICATION, e);
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				return;
 			}
 		}

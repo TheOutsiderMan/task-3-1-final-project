@@ -6,9 +6,21 @@ import java.sql.SQLException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import by.tr.web.kinorating.controller.FrontController;
 import by.tr.web.kinorating.dao.exception.DAOException;
 
 public final class ConnectionPool {
+	
+	private static final String PROBLEM_WITH_COMMITING_DB_DATA_CHANGES = "Problem with commiting DB data changes";
+
+	private static final String PROBLEM_WITH_CONNECTION_TO_DB = "Problem with connection to DB";
+
+	private static final String PROBLEM_WITH_LOADING_DB_DRIVER = "Problem with loading DB driver";
+
+	private static final Logger logger = LogManager.getLogger(ConnectionPool.class);
 	
 	private static ConnectionPool connectionPool = new ConnectionPool();
 	
@@ -45,9 +57,11 @@ public final class ConnectionPool {
 				connectionQueue.add(connection);
 			}
 		} catch (ClassNotFoundException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_LOADING_DB_DRIVER, e);
+			throw new DAOException(PROBLEM_WITH_LOADING_DB_DRIVER, e);
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_CONNECTION_TO_DB, e);
+			throw new DAOException(PROBLEM_WITH_CONNECTION_TO_DB, e);
 		}
 	}
 	
@@ -66,7 +80,8 @@ public final class ConnectionPool {
 				}
 				connection.close();
 			} catch (SQLException e) {
-				throw new DAOException(e);
+				logger.error(PROBLEM_WITH_COMMITING_DB_DATA_CHANGES, e);
+				throw new DAOException(PROBLEM_WITH_COMMITING_DB_DATA_CHANGES, e);
 			}
 			
 		}

@@ -1,0 +1,81 @@
+html {
+	position: relative;
+	min-height: 100%;
+}
+
+body {
+	margin-bottom: 60px;
+}
+
+.languages {
+	font-size: 12px;
+}
+
+.navbar-brand {
+	padding: 0, 0, 0, 0;
+}
+
+.footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 60px;
+	line-height: 60px;
+	background-color: #336E7B !important;
+	color: #E4F1FE;
+}
+
+footer>div>p {
+	margin-bottom: 0;
+}
+
+div.vote-wrap {
+	overflow: hidden;
+}
+
+div.vote-block {
+	position: relative;
+}
+
+div.vote-hover {
+	float: left;
+	cursor: pointer;
+}
+
+div.vote-stars {
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+div.vote-active {
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+div.vote-result {
+	color: #ccc;
+	font-size: 14px;
+	margin-top: 12px;
+}
+
+.vote-container {
+	margin-top: 1em;
+}
+
+.user-vote {
+	display: inline-block;
+	padding: .375rem 0;
+	margin-bottom: 0;
+	vertical-align: middle;
+}
+
+.delete-movie {
+	margin-left: .75rem;
+}
+
+.movie-alert, .movie-success {
+	margin-top: 0.5rem;
+	padding-right: 2.25rem;
+}

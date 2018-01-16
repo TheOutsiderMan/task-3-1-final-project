@@ -6,10 +6,12 @@ import java.util.List;
 
 public class Movie implements Serializable {
 	
-	private static final long serialVersionUID = 2046639388603468585L;
+	private static final long serialVersionUID = 5108867827370770294L;
 	
+	private int id;
 	private String title;
 	private double rating;
+	private int voteAmount;
 	private int year;
 	private int length;
 	private String director;
@@ -18,6 +20,14 @@ public class Movie implements Serializable {
 	private Date additionDate;
 
 	public Movie() {
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getTitle() {
@@ -34,6 +44,14 @@ public class Movie implements Serializable {
 
 	public void setRating(double rating) {
 		this.rating = rating;
+	}
+
+	public int getVoteAmount() {
+		return voteAmount;
+	}
+
+	public void setVoteAmount(int voteAmount) {
+		this.voteAmount = voteAmount;
 	}
 
 	public int getYear() {
@@ -92,11 +110,13 @@ public class Movie implements Serializable {
 		result = prime * result + ((additionDate == null) ? 0 : additionDate.hashCode());
 		result = prime * result + ((director == null) ? 0 : director.hashCode());
 		result = prime * result + ((genre == null) ? 0 : genre.hashCode());
+		result = prime * result + id;
 		result = prime * result + length;
 		long temp;
 		temp = Double.doubleToLongBits(rating);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
+		result = prime * result + voteAmount;
 		result = prime * result + year;
 		return result;
 	}
@@ -130,6 +150,8 @@ public class Movie implements Serializable {
 				return false;
 		} else if (!genre.equals(other.genre))
 			return false;
+		if (id != other.id)
+			return false;
 		if (length != other.length)
 			return false;
 		if (Double.doubleToLongBits(rating) != Double.doubleToLongBits(other.rating))
@@ -139,9 +161,11 @@ public class Movie implements Serializable {
 				return false;
 		} else if (!title.equals(other.title))
 			return false;
+		if (voteAmount != other.voteAmount)
+			return false;
 		if (year != other.year)
 			return false;
 		return true;
 	}
-
+	
 }

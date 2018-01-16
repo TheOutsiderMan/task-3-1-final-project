@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" strict="true" name="XMLConfig">
+	<Properties>
+		<Property name="filename">${web:rootDir}/logs/kinorating.log</Property>
+	</Properties>
+	<Appenders>
+		<Appender type="File" name="File" fileName="${filename}">
+			<Layout type="PatternLayout">
+				<Pattern>%d %p %C [%t] %m%n</Pattern>
+			</Layout>
+		</Appender>
+	</Appenders>
+	<Loggers>
+		<Logger name="by.tr.web.kinorating.controller.FrontController" level="info" additivity="false">
+			<AppenderRef ref="File" />
+		</Logger>
+		<Logger name="by.tr.web.kinorating.dao.connection_pool.ConnectionPool" level="info" additivity="false">
+			<AppenderRef ref="File" />
+		</Logger>
+		<Logger name="by.tr.web.kinorating.controller.command.impl.AddMovieImpl" level="info" additivity="false">
+			<AppenderRef ref="File" />
+		</Logger>
+		<Logger name="by.tr.web.kinorating.controller.command.impl.AuthenticationImpl" level="info" additivity="false">
+			<AppenderRef ref="File" />
+		</Logger>	
+		<Logger name="by.tr.web.kinorating.controller.command.impl.DeleteUserMarkImpl	" level="info" additivity="false">
+			<AppenderRef ref="File" />
+		</Logger>
+		<Logger name="by.tr.web.kinorating.controller.command.impl.RegistrationImpl" level="info" additivity="false">
+			<AppenderRef ref="File" />
+		</Logger>
+		<Logger name="by.tr.web.kinorating.controller.command.impl.PageViewInitialzeImpl" level="info" additivity="false">
+			<AppenderRef ref="File" />
+		</Logger>
+		<Logger name="by.tr.web.kinorating.controller.command.impl.VoteImpl" level="info" additivity="false">
+			<AppenderRef ref="File" />
+		</Logger>
+		<Logger name="by.tr.web.kinorating.dao.mysql.impl.MySQLUserDAOImpl" level="info" additivity="false">
+			<AppenderRef ref="File" />
+		</Logger>
+		<Logger name="by.tr.web.kinorating.dao.mysql.impl.MySQLActorDAOImpl" level="info" additivity="false">
+			<AppenderRef ref="File" />
+		</Logger>
+		<Logger name="by.tr.web.kinorating.dao.mysql.impl.MySQLReviewDAOImpl" level="info" additivity="false">
+			<AppenderRef ref="File" />
+		</Logger>
+		<Logger name="by.tr.web.kinorating.dao.mysql.impl.MySQLMovieDAOImpl" level="info" additivity="false">
+			<AppenderRef ref="File" />
+		</Logger>
+		<Logger name="by.tr.web.kinorating.service.impl.UserServiceImpl" level="warn" additivity="false">
+			<AppenderRef ref="File" />
+		</Logger>
+		<Logger name="by.tr.web.kinorating.service.impl.ReviewServiceImpl" level="warn" additivity="false">
+			<AppenderRef ref="File" />
+		</Logger>
+		<Logger name="by.tr.web.kinorating.service.impl.ActorServiceImpl" level="warn" additivity="false">
+			<AppenderRef ref="File" />
+		</Logger>
+		<!-- 
+		<Logger name="" level="warn" additivity="false">
+			<AppenderRef ref="File" />
+		</Logger> -->
+		<Root level="info">
+			<AppenderRef ref="File" />
+		</Root>
+	</Loggers>
+</Configuration>

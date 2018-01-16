@@ -1,5 +1,7 @@
 package by.tr.web.kinorating.dao;
 
+import java.util.List;
+
 import by.tr.web.kinorating.dao.exception.DAOException;
 import by.tr.web.kinorating.domain.Movie;
 import by.tr.web.kinorating.domain.Role;
@@ -13,6 +15,8 @@ public interface UserDAO {
 	User readUserByLogin(String login) throws DAOException;
 
 	User readUserByEmail(String email) throws DAOException;
+	
+	List<User> readAllUsers() throws DAOException;
 	
 	User checkUserWithLogin(User user) throws DAOException;
 	
@@ -29,6 +33,9 @@ public interface UserDAO {
 	boolean updateUserRating(User user, double newRating) throws DAOException;
 	
 	boolean updateUserMarkToMovie(User user, Movie movie, int newMark) throws DAOException;
+	
+	boolean removeUserMark(User user, Movie movie) throws DAOException;
 
 	boolean delete(User user) throws DAOException;
+	
 }

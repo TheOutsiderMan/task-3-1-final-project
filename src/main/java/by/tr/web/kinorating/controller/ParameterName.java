@@ -19,4 +19,7 @@ public final class ParameterName {
 	public static final String GENRE = "genre";
 	public static final String DIRECTOR = "director";
 	public static final String TITLE = "title";
+	public static final String MARK = "mark";
+	public static final String MOVIE_ID = "movieID";
+	
 }

@@ -13,8 +13,14 @@ import by.tr.web.kinorating.domain.Movie;
 import by.tr.web.kinorating.service.MovieService;
 import by.tr.web.kinorating.service.ServiceFactory;
 import by.tr.web.kinorating.service.exception.ServiceException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class AddMovieImpl implements Command{
+public class AddMovieImpl implements Command {
+
+	private static final String PROBLEM_WITH_ADDING_THE_MOVIE = "Problem with adding the movie";
+
+	private static final Logger logger = LogManager.getLogger(AddMovieImpl.class);
 
 	private static final String REDIRECT_URL = "app?action=init_view&page=movies";
 
@@ -23,10 +29,18 @@ public class AddMovieImpl implements Command{
 		String title = request.getParameter(ParameterName.TITLE);
 		String director = request.getParameter(ParameterName.DIRECTOR);
 		String genre = request.getParameter(ParameterName.GENRE);
-		int year = Integer.valueOf(request.getParameter(ParameterName.YEAR));
-		int length = Integer.valueOf(request.getParameter(ParameterName.LENGTH));
+		String yearParameter = request.getParameter(ParameterName.YEAR);
+		String lengthParameter = request.getParameter(ParameterName.LENGTH);
+		int year = 0;
+		if (!yearParameter.isEmpty()) {
+			year = Integer.valueOf(yearParameter);
+		}
+		int length = 0;
+		if (!lengthParameter.isEmpty()) {
+			length = Integer.valueOf(lengthParameter);
+		}
 		String langName = request.getParameter(ParameterName.LOCALE);
-		
+
 		Movie movie = new Movie();
 		movie.setTitle(title);
 		movie.setDirector(director);
@@ -34,17 +48,23 @@ public class AddMovieImpl implements Command{
 		movie.setYear(year);
 		movie.setLength(length);
 		movie.setAdditionDate(new Date());
-		
+
 		ServiceFactory factory = ServiceFactory.getInstance();
 		MovieService movieService = factory.getMoviesService();
+		boolean updated = false;
 		try {
-			movieService.addMovie(movie, langName);
+			updated = movieService.addMovie(movie, langName);
 		} catch (ServiceException e) {
-			// log
-			response.sendError(404);
+			logger.error(PROBLEM_WITH_ADDING_THE_MOVIE, e);
+			response.sendError(HttpServletResponse.SC_CONFLICT);
 			return;
 		}
-		response.sendRedirect(REDIRECT_URL);
+		if (updated) {
+			response.sendRedirect(REDIRECT_URL);
+		} else {
+			response.sendError(HttpServletResponse.SC_CONFLICT);
+		}
+
 	}
 
 }

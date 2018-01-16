@@ -29,14 +29,14 @@
 	<title>${locale_page_title}</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/task.css">
+	<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../css/main.css">
 </head>
 
 <body>
 	<header class="row-fluid">
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-			<a class="navbar-brand" href="app?action=init_view&page=main"><c:out value="${locale_page_title}" /></a>
+			<a class="navbar-brand" href="app?action=init_view&page=main"><img alt="logo" src="../img/logo.png" ></a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse"
 				data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
 				aria-expanded="false" aria-label="Toggle navigation">
@@ -56,14 +56,14 @@
 						</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="#">
+						<a class="nav-link" href="app?action=init_view&page=reviews">
 							<c:out value="${navbar_link_reviews}" />
 						</a>
 					</li>
 					<c:choose>
 						<c:when test="${sessionScope.user.role.toString() == 'ADMIN' }">
 							<li class="nav-item">
-								<a class="nav-link" href="#">
+								<a class="nav-link" href="app?action=init_view&page=users">
 									<c:out value="${navbar_link_users}" />
 								</a>
 							</li>
@@ -152,14 +152,14 @@
 		</nav>
 	</header>
 	<main class="container-fluid">
-	<div class="row">
-		<div class="col-2"></div>
-		<div class="col-8"></div>
-		<div class="col-2"></div>
-	</div>
+		<div class="row">
+			<div class="col-2"></div>
+			<div class="col-8"></div>
+			<div class="col-2"></div>
+		</div>
 	</main>
 	<footer class="footer">
-		<div class="container-fluid  fixed-bottom">
+		<div class="container">
 			<p class="text-center">
 				<c:out value="${footer_text}" />
 			</p>

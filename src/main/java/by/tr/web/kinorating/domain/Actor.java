@@ -4,13 +4,22 @@ import java.io.Serializable;
 
 public class Actor implements Serializable {
 
-	private static final long serialVersionUID = 6880702807095199385L;
+	private static final long serialVersionUID = 711704367889864071L;
 
+	private int id;
 	private String firstName;
 	private String secondName;
 	private int age;
 
 	public Actor() {
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getFirstName() {
@@ -43,6 +52,7 @@ public class Actor implements Serializable {
 		int result = 1;
 		result = prime * result + age;
 		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
+		result = prime * result + id;
 		result = prime * result + ((secondName == null) ? 0 : secondName.hashCode());
 		return result;
 	}
@@ -62,6 +72,8 @@ public class Actor implements Serializable {
 			if (other.firstName != null)
 				return false;
 		} else if (!firstName.equals(other.firstName))
+			return false;
+		if (id != other.id)
 			return false;
 		if (secondName == null) {
 			if (other.secondName != null)

@@ -5,10 +5,15 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import by.tr.web.kinorating.dao.DAOAbstractFactory;
 import by.tr.web.kinorating.dao.MovieDAO;
@@ -23,24 +28,31 @@ import by.tr.web.kinorating.domain.User;
 
 public class MySQLUserDAOImpl implements UserDAO {
 	
+	private static final String CREATE_USER_QUERY = "INSERT INTO users (us_login, us_password, us_email, us_role, us_status, us_rating, us_registration_date) VALUES(?, ?, ?, ?, ?, ?, ?)";
+	private static final String ADD_USER_MARK_TO_MOVIE_QUERY = "INSERT INTO user_marks (user_id, movie_id, user_mark) VALUES ((SELECT us_id FROM users WHERE us_login=?), ?, ?)";
+	private static final String SELECT_FROM_USERS_QUERY = "SELECT * FROM users";
+	private static final String SELECT_USER_MARK_TO_MOVIE_QUERy = "SELECT * FROM user_marks WHERE user_id=(SELECT us_id FROM users WHERE us_login=?) AND movie_id=?";
+	private static final String SELECT_USER_BY_EMAIL = "SELECT * FROM users WHERE us_email=?";
+	private static final String SELECT_USER_BY_LOGIN = "SELECT * FROM users WHERE us_login=?";
+	private static final String USER_EXISTS_QUERY = "SELECT us_id FROM users WHERE us_login=? OR us_email=?";
 	private static final String GET_USER_MARKS = "SELECT * FROM user_marks WHERE user_id=?";
 	private static final String UPDATE_USER_MARK_QUERY = "UPDATE user_marks SET user_mark=? WHERE movie_id=?";
-	private static final String SELECT_OLD_USER_MARK_QUERY = "SELECT * FROM user_marks WHERE user_id=(SELECT us_id FROM users WHERE us_login=?) AND movie_id=(SELECT mov_id FROM movies_translate WHERE mov_title=? AND mov_director=?)";
-	private static final String DELETE_USER_MARK_QUERY = "DELETE FROM user_marks WHERE user_id=(SELECT us_id FROM users WHERE us_login=?) AND movie_id=(SELECT mov_id FROM movies_translate WHERE mov_title=? AND mov_director=?)";
-	private static final String ADD_USER_MARK_TO_MOVIE_QUERY = "INSERT INTO user marks (user_id, movie_id, user_mark) VALUES ((SELECT us_id FROM users WHERE us_login=?), (SELECT mov_id FROM movies_translate WHERE mov_title=? AND mov_director=?), ?)";
-	private static final String SELECT_USER_MARK_TO_MOVIE_QUERy = "SELECT * FROM us_marks WHERE user_id=(SELECT us_id FROM users WHERE login=?) AND movie_id=(SELECT mov_id FROM movies_translate WHERE mov_title=? AND mov_director=?)";
-	private static final String USER_EXISTS_QUERY = "SELECT us_id FROM users WHERE us_login=? OR us_email=?";
 	private static final String UPDATE_USER_STATUS_QUERY = "UPDATE users SET us_status=? WHERE us_login=?";
 	private static final String UPDATE_USER_RATING_QUERY = "UPDATE users SET us_rating=? WHERE us_login=?";
 	private static final String UPDATE_USER_ROLE_QUERY = "UPDATE users SET us_role=? WHERE us_login=?";
 	private static final String UPDATE_USER_EMAIL_QUERY = "UPDATE users SET us_email=? WHERE us_login=?";
 	private static final String UPDATE_USER_PASSWORD_QUERY = "UPDATE users SET us_password=? WHERE us_login=?";
+	private static final String DELETE_USER_MARK_QUERY = "DELETE FROM user_marks WHERE user_id=(SELECT us_id FROM users WHERE us_login=?) AND movie_id=?";
 	private static final String DELETE_USER_QUERY = "DELETE FROM users WHERE us_login=? OR us_email=?";
 	private static final String EMPTY_STRING = "";
-	private static final String SELECT_USER_BY_EMAIL = "SELECT * FROM users WHERE us_email=?";
-	private static final String SELECT_USER_BY_LOGIN = "SELECT * FROM users WHERE us_login=?";
-	private static final String CREATE_USER_QUERY = "INSERT INTO users (us_login, us_password, us_email, us_role, us_status, us_rating, us_registration_date) VALUES(?, ?, ?, ?, ?, ?, ?)";
-
+	
+	private static final String PROBLEM_WITH_READING_FROM_DB = "Problem with reading from DB";
+	private static final String PROBLEM_WITH_CONNECTION_POOL = "Problem with connection pool";
+	private static final String PROBLEM_TO_CLOSE_RESOURCE = "Problem to close resource";
+	private static final String PROBLEM_WITH_EDITING_DB = "Problem with editing DB";
+	
+	private static final Logger logger = LogManager.getLogger(MySQLUserDAOImpl.class);
+	
 	@Override
 	public boolean createUser(User user) throws DAOException {
 		Connection connection = null;
@@ -71,15 +83,18 @@ public class MySQLUserDAOImpl implements UserDAO {
 				return true;
 			}
 		} catch (InterruptedException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_CONNECTION_POOL, e);
+			throw new DAOException(PROBLEM_WITH_CONNECTION_POOL, e);
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_EDITING_DB, e);
+			throw new DAOException(PROBLEM_WITH_EDITING_DB, e);
 		} finally {
 			if (preparedStatement != null) {
 				try {
 					preparedStatement.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
 			if(connection != null) {
@@ -89,6 +104,58 @@ public class MySQLUserDAOImpl implements UserDAO {
 		return false;
 	}
 	
+	@Override
+	public List<User> readAllUsers() throws DAOException {
+		Connection connection = null;
+		Statement statement= null;
+		ResultSet resultSet = null;
+		List<User> users = new ArrayList<User>();
+		try {
+			connection = ConnectionPool.getInstance().takeConnection();
+			statement = connection.createStatement();
+			resultSet = statement.executeQuery(SELECT_FROM_USERS_QUERY);
+			while (resultSet.next()) {
+				User user = new User();
+				user.setLogin(resultSet.getString(2));
+				user.setPassword(resultSet.getString(3));
+				user.setEmail(resultSet.getString(4));
+				user.setRole(Role.valueOf(resultSet.getString(5)));
+				user.setStatus(Status.valueOf(resultSet.getString(6)));
+				user.setRating(resultSet.getDouble(7));
+				java.util.Date date = new java.util.Date(resultSet.getDate(8).getTime());
+				user.setRegistrationDate(date);
+				users.add(user);
+			}
+		} catch (InterruptedException e) {
+			logger.error(PROBLEM_WITH_CONNECTION_POOL, e);
+			throw new DAOException(PROBLEM_WITH_CONNECTION_POOL, e);
+		} catch (SQLException e) {
+			logger.error(PROBLEM_WITH_READING_FROM_DB, e);
+			throw new DAOException(PROBLEM_WITH_READING_FROM_DB, e);
+		} finally {
+			if(resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (SQLException e) {
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
+				}
+			}
+			if(connection != null) {
+				ConnectionPool.getInstance().releaseConnection(connection);
+			}
+		}
+		return users;
+	}
+
 	private boolean isExistedUser(String string) throws DAOException {
 		Connection connection = null;
 		PreparedStatement statement= null;
@@ -103,9 +170,31 @@ public class MySQLUserDAOImpl implements UserDAO {
 				return true;
 			}
 		} catch (InterruptedException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_CONNECTION_POOL, e);
+			throw new DAOException(PROBLEM_WITH_CONNECTION_POOL, e);
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_READING_FROM_DB, e);
+			throw new DAOException(PROBLEM_WITH_READING_FROM_DB, e);
+		} finally {
+			if(resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (SQLException e) {
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
+				}
+			}
+			if(connection != null) {
+				ConnectionPool.getInstance().releaseConnection(connection);
+			}
 		}
 		return false;
 	}
@@ -133,26 +222,30 @@ public class MySQLUserDAOImpl implements UserDAO {
 				user.setRating(resultSet.getDouble(7));
 				Date regDate = resultSet.getDate(8);
 				user.setRegistrationDate(new Date(regDate.getTime()));
-				Map<Movie, Integer> marks = getUserMarks(userID);
+				Map<Integer, Integer> marks = getUserMarks(userID);
 				user.setMarks(marks);
 			}
 		} catch (InterruptedException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_CONNECTION_POOL, e);
+			throw new DAOException(PROBLEM_WITH_CONNECTION_POOL, e);
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_READING_FROM_DB, e);
+			throw new DAOException(PROBLEM_WITH_READING_FROM_DB, e);
 		} finally {
 			if(resultSet != null) {
 				try {
 					resultSet.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
 			if (statement != null) {
 				try {
 					statement.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
 			if(connection != null) {
@@ -185,26 +278,30 @@ public class MySQLUserDAOImpl implements UserDAO {
 				user.setRating(resultSet.getDouble(7));
 				Date regDate = resultSet.getDate(8);
 				user.setRegistrationDate(new Date(regDate.getTime()));
-				Map<Movie, Integer> marks = getUserMarks(userID);
+				Map<Integer, Integer> marks = getUserMarks(userID);
 				user.setMarks(marks);
 			}
 		} catch (InterruptedException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_CONNECTION_POOL, e);
+			throw new DAOException(PROBLEM_WITH_CONNECTION_POOL, e);
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_READING_FROM_DB, e);
+			throw new DAOException(PROBLEM_WITH_READING_FROM_DB, e);
 		} finally {
 			if(resultSet != null) {
 				try {
 					resultSet.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
 			if (statement != null) {
 				try {
 					statement.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
 			if(connection != null) {
@@ -214,40 +311,42 @@ public class MySQLUserDAOImpl implements UserDAO {
 		return user;
 	}
 	
-	private Map<Movie, Integer> getUserMarks(int id) throws DAOException {
+	private Map<Integer, Integer> getUserMarks(int id) throws DAOException {
 		Connection connection = null;
 		PreparedStatement statement= null;
 		ResultSet resultSet = null;
-		Map<Movie, Integer> marks = new HashMap<Movie, Integer>();
+		Map<Integer, Integer> marks = new HashMap<Integer, Integer>();
 		try {
 			connection = ConnectionPool.getInstance().takeConnection();
 			statement = connection.prepareStatement(GET_USER_MARKS);
 			statement.setInt(1, id);
 			resultSet = statement.executeQuery();
-			DAOAbstractFactory factory = MySQLDAOFactory.getInstance();
-			MovieDAO movieDAO = factory.getMovieDAO();
 			while (resultSet.next()) {
-				Movie movie = movieDAO.readMovieById(resultSet.getInt(2));
+				Integer movieID = resultSet.getInt(2);
 				Integer mark = resultSet.getInt(3);
-				marks.put(movie, mark);
+				marks.put(movieID, mark);
 			}
 		} catch (InterruptedException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_CONNECTION_POOL, e);
+			throw new DAOException(PROBLEM_WITH_CONNECTION_POOL, e);
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_READING_FROM_DB, e);
+			throw new DAOException(PROBLEM_WITH_READING_FROM_DB, e);
 		} finally {
 			if(resultSet != null) {
 				try {
 					resultSet.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
 			if (statement != null) {
 				try {
 					statement.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
 			if(connection != null) {
@@ -318,15 +417,18 @@ public class MySQLUserDAOImpl implements UserDAO {
 			}
 
 		} catch (InterruptedException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_CONNECTION_POOL, e);
+			throw new DAOException(PROBLEM_WITH_CONNECTION_POOL, e);
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_EDITING_DB, e);
+			throw new DAOException(PROBLEM_WITH_EDITING_DB, e);
 		} finally {
 			if (statement != null) {
 				try {
 					statement.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
 			if(connection != null) {
@@ -351,15 +453,18 @@ public class MySQLUserDAOImpl implements UserDAO {
 				return true;
 			}
 		} catch (InterruptedException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_CONNECTION_POOL, e);
+			throw new DAOException(PROBLEM_WITH_CONNECTION_POOL, e);
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_EDITING_DB, e);
+			throw new DAOException(PROBLEM_WITH_EDITING_DB, e);
 		} finally {
 			if (statement != null) {
 				try {
 					statement.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
 			if(connection != null) {
@@ -386,15 +491,18 @@ public class MySQLUserDAOImpl implements UserDAO {
 			}
 
 		} catch (InterruptedException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_CONNECTION_POOL, e);
+			throw new DAOException(PROBLEM_WITH_CONNECTION_POOL, e);
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_EDITING_DB, e);
+			throw new DAOException(PROBLEM_WITH_EDITING_DB, e);
 		} finally {
 			if (statement != null) {
 				try {
 					statement.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
 			if(connection != null) {
@@ -420,15 +528,18 @@ public class MySQLUserDAOImpl implements UserDAO {
 				return true;
 			}
 		} catch (InterruptedException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_CONNECTION_POOL, e);
+			throw new DAOException(PROBLEM_WITH_CONNECTION_POOL, e);
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_EDITING_DB, e);
+			throw new DAOException(PROBLEM_WITH_EDITING_DB, e);
 		} finally {
 			if (statement != null) {
 				try {
 					statement.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
 			if(connection != null) {
@@ -451,15 +562,18 @@ public class MySQLUserDAOImpl implements UserDAO {
 			statement.setString(2, user.getLogin());
 			rowCount = statement.executeUpdate();
 		} catch (InterruptedException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_CONNECTION_POOL, e);
+			throw new DAOException(PROBLEM_WITH_CONNECTION_POOL, e);
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_EDITING_DB, e);
+			throw new DAOException(PROBLEM_WITH_EDITING_DB, e);
 		} finally {
 			if (statement != null) {
 				try {
 					statement.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
 			if(connection != null) {
@@ -479,27 +593,15 @@ public class MySQLUserDAOImpl implements UserDAO {
 	public boolean updateUserMarkToMovie(User user, Movie movie, int newMark) throws DAOException {
 		DAOAbstractFactory factory =  MySQLDAOFactory.getInstance();
 		MovieDAO movieDAO = factory.getMovieDAO();
-		if (newMark != 0) {
-			if(!isExistedMark(user, movie)) {
-				if (addUserMarkToMovie(user, movie, newMark)) {
-					movieDAO.updateMovieMark(movie, newMark, 1);
-					return true;
-				} 
-				return false;
-			} 
-			int oldMark = changeUserMark(user, movie, newMark);
-			if (oldMark > 0) {
-				newMark -= oldMark;
-				movieDAO.updateMovieMark(movie, newMark, 0);
-				return true;
-			} 
-			return false;
+		boolean updated = false;
+		if(!isExistedMark(user, movie)) {
+			updated = addUserMarkToMovie(user, movie, newMark);
+		} else {
+			updated = changeUserMark(user, movie, newMark);
 		}
-		if (removeUserMark(user, movie)) {
-			movieDAO.updateMovieMark(movie, newMark, -1);
-			return true;
-		}
-		return false;
+		movieDAO.updateMovieRating(movie);
+		movieDAO.updateMovieMarksAmount(movie);
+		return updated;
 	}
 	
 	
@@ -511,29 +613,32 @@ public class MySQLUserDAOImpl implements UserDAO {
 			connection = ConnectionPool.getInstance().takeConnection();
 			statement = connection.prepareStatement(SELECT_USER_MARK_TO_MOVIE_QUERy);
 			statement.setString(1, user.getLogin());
-			statement.setString(2, movie.getTitle());
-			statement.setString(3, movie.getDirector());
+			statement.setInt(2, movie.getId());
 			resultSet = statement.executeQuery();
 			if (resultSet.next()) {
 				return true;
 			}
 		} catch (InterruptedException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_CONNECTION_POOL, e);
+			throw new DAOException(PROBLEM_WITH_CONNECTION_POOL, e);
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_READING_FROM_DB, e);
+			throw new DAOException(PROBLEM_WITH_READING_FROM_DB, e);
 		} finally {
 			if (resultSet != null) {
 				try {
 					resultSet.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
 			if (statement != null) {
 				try {
 					statement.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
 			if(connection != null) {
@@ -551,23 +656,25 @@ public class MySQLUserDAOImpl implements UserDAO {
 			connection = ConnectionPool.getInstance().takeConnection();
 			statement = connection.prepareStatement(ADD_USER_MARK_TO_MOVIE_QUERY);
 			statement.setString(1, user.getLogin());
-			statement.setString(2, movie.getTitle());
-			statement.setString(3, movie.getDirector());
-			statement.setInt(4, newMark);
+			statement.setInt(2, movie.getId());
+			statement.setInt(3, newMark);
 			rowCount = statement.executeUpdate();
 			if (rowCount > 0) {
 				return true;
 			}
 		} catch (InterruptedException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_CONNECTION_POOL, e);
+			throw new DAOException(PROBLEM_WITH_CONNECTION_POOL, e);
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_EDITING_DB, e);
+			throw new DAOException(PROBLEM_WITH_EDITING_DB, e);
 		} finally {
 			if (statement != null) {
 				try {
 					statement.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
 			if(connection != null) {
@@ -577,7 +684,8 @@ public class MySQLUserDAOImpl implements UserDAO {
 		return false;
 	}
 	
-	private boolean removeUserMark(User user, Movie movie) throws DAOException {
+	@Override
+	public boolean removeUserMark(User user, Movie movie) throws DAOException {
 		Connection connection = null;
 		PreparedStatement statement= null;
 		int rowCount = 0;
@@ -585,22 +693,24 @@ public class MySQLUserDAOImpl implements UserDAO {
 			connection = ConnectionPool.getInstance().takeConnection();
 			statement = connection.prepareStatement(DELETE_USER_MARK_QUERY);
 			statement.setString(1, user.getLogin());
-			statement.setString(2, movie.getTitle());
-			statement.setString(3, movie.getDirector());
+			statement.setInt(2, movie.getId());
 			rowCount = statement.executeUpdate();
 			if (rowCount > 0) {
 				return true;
 			}
 		} catch (InterruptedException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_CONNECTION_POOL, e);
+			throw new DAOException(PROBLEM_WITH_CONNECTION_POOL, e);
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_EDITING_DB, e);
+			throw new DAOException(PROBLEM_WITH_EDITING_DB, e);
 		} finally {
 			if (statement != null) {
 				try {
 					statement.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
 			if(connection != null) {
@@ -610,62 +720,47 @@ public class MySQLUserDAOImpl implements UserDAO {
 		return false;
 	}
 	
-	private int changeUserMark(User user, Movie movie, int newMark) throws DAOException {
+	private boolean changeUserMark(User user, Movie movie, int newMark) throws DAOException {
 		Connection connection = null;
-		PreparedStatement selectStatement= null;
-		PreparedStatement insertStatement= null;
+		PreparedStatement statement= null;
 		ResultSet resultSet = null;
-		int oldMark = 0;
 		try {
 			connection = ConnectionPool.getInstance().takeConnection();
-			selectStatement = connection.prepareStatement(SELECT_OLD_USER_MARK_QUERY);
-			selectStatement.setString(1, user.getLogin());
-			selectStatement.setString(2, movie.getTitle());
-			selectStatement.setString(3, movie.getDirector());
-			resultSet = selectStatement.executeQuery();
-			int movieID = 0;
-			while (resultSet.next()) {
-				movieID = resultSet.getInt(2);
-				oldMark = resultSet.getInt(3);
-			}
-			insertStatement = connection.prepareStatement(UPDATE_USER_MARK_QUERY);
-			insertStatement.setInt(1, newMark);
-			insertStatement.setInt(2, movieID);
-			int rowCount = insertStatement.executeUpdate();
-			if (rowCount == 0) {
-				return 0;
+			statement = connection.prepareStatement(UPDATE_USER_MARK_QUERY);
+			statement.setInt(1, newMark);
+			statement.setInt(2, movie.getId());
+			int rowCount = statement.executeUpdate();
+			if (rowCount != 0) {
+				return true;
 			}
 		} catch (InterruptedException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_CONNECTION_POOL, e);
+			throw new DAOException(PROBLEM_WITH_CONNECTION_POOL, e);
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_EDITING_DB, e);
+			throw new DAOException(PROBLEM_WITH_EDITING_DB, e);
 		} finally {
 			if (resultSet != null) {
 				try {
 					resultSet.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
-			if (selectStatement != null) {
+			if (statement != null) {
 				try {
-					selectStatement.close();
+					statement.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
-				}
-			}
-			if (insertStatement != null) {
-				try {
-					insertStatement.close();
-				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
 			if(connection != null) {
 				ConnectionPool.getInstance().releaseConnection(connection);
 			}
 		}
-		return oldMark;
+		return false;
 	}
 	
 	@Override
@@ -676,7 +771,7 @@ public class MySQLUserDAOImpl implements UserDAO {
 		try {
 			connection = ConnectionPool.getInstance().takeConnection();
 			statement = connection.prepareStatement(DELETE_USER_QUERY);
-			String login = user.getLogin();;
+			String login = user.getLogin();
 			if (user.getLogin() == null) {
 				login = EMPTY_STRING;
 			}
@@ -691,15 +786,18 @@ public class MySQLUserDAOImpl implements UserDAO {
 				return true;
 			}
 		} catch (InterruptedException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_CONNECTION_POOL, e);
+			throw new DAOException(PROBLEM_WITH_CONNECTION_POOL, e);
 		} catch (SQLException e) {
-			throw new DAOException(e);
+			logger.error(PROBLEM_WITH_EDITING_DB, e);
+			throw new DAOException(PROBLEM_WITH_EDITING_DB, e);
 		} finally {
 			if (statement != null) {
 				try {
 					statement.close();
 				} catch (SQLException e) {
-					throw new DAOException(e);
+					logger.error(PROBLEM_TO_CLOSE_RESOURCE, e);
+					throw new DAOException(PROBLEM_TO_CLOSE_RESOURCE, e);
 				}
 			}
 			if(connection != null) {
@@ -708,5 +806,4 @@ public class MySQLUserDAOImpl implements UserDAO {
 		}
 		return false;
 	}
-
 }

@@ -5,15 +5,23 @@ import java.util.Date;
 
 public class Review implements Serializable {
 	
-	private static final long serialVersionUID = 1254537535436209174L;
+	private static final long serialVersionUID = -3423182060568315342L;
 	
+	private int id;
 	private String textReview;
 	private User author;
 	private Movie reviewedMovie;
 	private Date additionDate;
 
 	public Review() {
+	}
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getTextReview() {
@@ -54,6 +62,7 @@ public class Review implements Serializable {
 		int result = 1;
 		result = prime * result + ((additionDate == null) ? 0 : additionDate.hashCode());
 		result = prime * result + ((author == null) ? 0 : author.hashCode());
+		result = prime * result + id;
 		result = prime * result + ((reviewedMovie == null) ? 0 : reviewedMovie.hashCode());
 		result = prime * result + ((textReview == null) ? 0 : textReview.hashCode());
 		return result;
@@ -77,6 +86,8 @@ public class Review implements Serializable {
 			if (other.author != null)
 				return false;
 		} else if (!author.equals(other.author))
+			return false;
+		if (id != other.id)
 			return false;
 		if (reviewedMovie == null) {
 			if (other.reviewedMovie != null)

@@ -3,15 +3,20 @@ package by.tr.web.kinorating.service;
 import java.util.List;
 
 import by.tr.web.kinorating.domain.Review;
+import by.tr.web.kinorating.service.exception.ServiceException;
 
 public interface ReviewService {
 	
-	List<Review> getAllReviews();
+	boolean addReview(String userLogin, int movieID, String text) throws ServiceException;
 	
-	List<Review> getUserReview(String login);
+	List<Review> showAllReviews() throws ServiceException;
 	
-	List<Review> getMovieReviws(String title);
+	List<Review> showUserReview(String login) throws ServiceException;
 	
-	List<Review> deleteReview(String login);
+	List<Review> showMovieReviws(int movieID) throws ServiceException;
+	
+	boolean editReview(int reviewID, String newText) throws ServiceException;
+	
+	boolean deleteReview(int reviewID) throws ServiceException;
 	
 }

@@ -15,7 +15,7 @@ public class User implements Serializable {
 	private double rating;
 	private Status status;
 	private Date registrationDate;
-	private Map<Movie, Integer> marks;
+	private Map<Integer, Integer> marks;
 
 	public User() {
 	}
@@ -76,11 +76,11 @@ public class User implements Serializable {
 		this.registrationDate = registrationDate;
 	}
 
-	public Map<Movie, Integer> getMarks() {
+	public Map<Integer, Integer> getMarks() {
 		return marks;
 	}
 
-	public void setMarks(Map<Movie, Integer> marks) {
+	public void setMarks(Map<Integer, Integer> marks) {
 		this.marks = marks;
 	}
 
@@ -143,5 +143,5 @@ public class User implements Serializable {
 			return false;
 		return true;
 	}
-	
+
 }

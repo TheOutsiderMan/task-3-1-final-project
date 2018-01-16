@@ -10,7 +10,7 @@ import by.tr.web.kinorating.domain.User;
 public interface ReviewDAO {
 
 	boolean createReview(Review review) throws DAOException;
-
+	
 	Review readReview(User user, Movie movie) throws DAOException;
 
 	List<Review> readReviewsByUser(User user) throws DAOException;

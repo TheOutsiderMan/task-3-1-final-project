@@ -29,4 +29,12 @@
 		<name>add_movie</name>
 		<class>by.tr.web.kinorating.controller.command.impl.AddMovieImpl</class>
 	</command>
+	<command>
+		<name>vote</name>
+		<class>by.tr.web.kinorating.controller.command.impl.VoteImpl</class>
+	</command>
+	<command>
+		<name>delete_user_mark</name>
+		<class>by.tr.web.kinorating.controller.command.impl.DeleteUserMarkImpl</class>
+	</command>
 </commands>

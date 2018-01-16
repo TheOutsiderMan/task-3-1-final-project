@@ -8,6 +8,8 @@ import by.tr.web.kinorating.domain.Movie;
 public interface MovieDAO {
 	
 	boolean createMovie(Movie movie, String locale) throws DAOException;
+	
+	boolean addTranslation(Movie translation, String locale) throws DAOException;
 
 	List<Movie> readAllMovies(String locale) throws DAOException;
 
@@ -21,13 +23,15 @@ public interface MovieDAO {
 
 	boolean updateMovieLength(Movie movie, int newLength) throws DAOException;
 
-	boolean updateMovieyear(Movie movie, int newYear) throws DAOException;
+	boolean updateMovieYear(Movie movie, int newYear) throws DAOException;
 
 	boolean updateMovieDirector(Movie movie, String newDirector) throws DAOException;
 
 	boolean updateMovieGenre(Movie movie, String newGenre) throws DAOException;
 
-	boolean updateMovieMark(Movie movie, int newMark, int amountDifference) throws DAOException;
+	boolean updateMovieRating(Movie movie) throws DAOException;
+	
+	boolean updateMovieMarksAmount(Movie movie) throws DAOException;
 
 	boolean deleteMovie(Movie movie) throws DAOException;
 
